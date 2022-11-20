@@ -23,10 +23,6 @@ jobs:
         with:
           lfs: true
 
-      - name: dump
-        run: |
-          Write-Host "Got YA"
-
       - name: Determine Changed Files
         id: ChangedFiles
         run: |
