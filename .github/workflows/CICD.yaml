@@ -287,18 +287,6 @@ jobs:
           deliveryTarget: ${{ matrix.deliveryTarget }}
           artifacts: '.artifacts'
 
-  CustomJob-MyJob:
-    name: My Job
-    needs: [ Initialization, CheckForUpdates ]
-    runs-on: [ ubuntu-latest ]
-    defaults:
-      run:
-        shell: pwsh
-    steps:
-      - name: Determine Workflow Depth
-        run: |
-          Write-Host "This is my job"
-
   PostProcess:
     if: (!cancelled())
     runs-on: [ ubuntu-latest ]
@@ -314,3 +302,15 @@ jobs:
           shell: pwsh
           eventId: "DO0091"
           telemetryScopeJson: ${{ needs.Initialization.outputs.telemetryScopeJson }}
+
+  CustomJob-MyJob:
+    name: My Job
+    needs: [ Initialization, CheckForUpdates ]
+    runs-on: [ ubuntu-latest ]
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - name: Determine Workflow Depth
+        run: |
+          Write-Host "This is my job"
