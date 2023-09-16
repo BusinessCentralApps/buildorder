@@ -7,8 +7,8 @@ on:
       - '**.md'
       - '.github/workflows/*.yaml'
       - '!.github/workflows/CICD.yaml'
-    branches: [ 'main', 'release/*', 'feature/*' ]
 
+    branches: [ 'main', 'release/*', 'feature/*' ]
 defaults:
   run:
     shell: pwsh
@@ -18,8 +18,8 @@ permissions:
   actions: read
 
 env:
-  workflowDepth: 3
   ALGoOrgSettings: ${{ vars.ALGoOrgSettings }}
+  workflowDepth: 3
   ALGoRepoSettings: ${{ vars.ALGoRepoSettings }}
 
 jobs:
@@ -126,10 +126,13 @@ jobs:
           templateUrl: ${{ env.templateUrl }}
           downloadLatest: true
 
+      signArtifacts: true
   Build1:
-    needs: [ Initialization, CustomJob-MyJob, CustomJob-MyJob1 ]
-    if: (!failure()) && (!cancelled()) && fromJson(needs.Initialization.outputs.buildOrderJson)[0].projectsCount > 0
+    needs: [ Initialization, CustomJob-MyJob ]
+    needs: [ Initialization, CustomJob-MyJob1 ]
+      useArtifactCache: true
     strategy:
+    if: (!failure()) && (!cancelled()) && fromJson(needs.Initialization.outputs.buildOrderJson)[0].projectsCount > 0
       matrix:
         include: ${{ fromJson(needs.Initialization.outputs.buildOrderJson)[0].buildDimensions }}
       fail-fast: false
@@ -151,11 +154,15 @@ jobs:
       useArtifactCache: true
 
   Build2:
-    needs: [ Initialization, Build1, CustomJob-MyJob, CustomJob-MyJob1 ]
-    if: (!failure()) && (!cancelled()) && (needs.Build1.result == 'success' || needs.Build1.result == 'skipped') && fromJson(needs.Initialization.outputs.buildOrderJson)[1].projectsCount > 0
+    needs: [ Initialization, Build1, CustomJob-MyJob ]
+    needs: [ Initialization, Build1, CustomJob-MyJob1 ]
+      useArtifactCache: true
+    needs: [ Initialization ]
+      useArtifactCache: true
     strategy:
       matrix:
-        include: ${{ fromJson(needs.Initialization.outputs.buildOrderJson)[1].buildDimensions }}
+    if: (!failure()) && (!cancelled()) && (needs.Build1.result == 'success' || needs.Build1.result == 'skipped') && fromJson(needs.Initialization.outputs.buildOrderJson)[1].projectsCount > 0
+        include: ${{ fromJson(needs.Initialization.outputs.buildOrderJson)[0].buildDimensions }}
       fail-fast: false
     name: Build ${{ matrix.projectName }} (${{ matrix.buildMode }})
     uses: ./.github/workflows/_BuildALGoProject.yaml
@@ -175,10 +182,75 @@ jobs:
       useArtifactCache: true
 
   Build:
-    needs: [ Initialization, Build2, Build1, CustomJob-MyJob, CustomJob-MyJob1 ]
-    if: (!failure()) && (!cancelled()) && (needs.Build2.result == 'success' || needs.Build2.result == 'skipped') && (needs.Build1.result == 'success' || needs.Build1.result == 'skipped') && fromJson(needs.Initialization.outputs.buildOrderJson)[2].projectsCount > 0
+    needs: [ Initialization, Build2, Build1, CustomJob-MyJob ]
+    needs: [ Initialization, Build2, Build1, CustomJob-MyJob1 ]
+      useArtifactCache: true
+    needs: [ Initialization, Build1 ]
+      useArtifactCache: true
+    needs: [ Initialization ]
+      useArtifactCache: true
     strategy:
       matrix:
+    if: (!failure()) && (!cancelled()) && (needs.Build2.result == 'success' || needs.Build2.result == 'skipped') && (needs.Build1.result == 'success' || needs.Build1.result == 'skipped') && fromJson(needs.Initialization.outputs.buildOrderJson)[2].projectsCount > 0
+        include: ${{ fromJson(needs.Initialization.outputs.buildOrderJson)[2].buildDimensions }}
+      fail-fast: false
+    name: Build ${{ matrix.projectName }} (${{ matrix.buildMode }})
+    uses: ./.github/workflows/_BuildALGoProject.yaml
+    secrets: inherit
+    with:
+      shell: ${{ needs.Initialization.outputs.githubRunnerShell }}
+      runsOn: ${{ needs.Initialization.outputs.githubRunner }}
+      parentTelemetryScopeJson: ${{ needs.Initialization.outputs.telemetryScopeJson }}
+      project: ${{ matrix.project }}
+      projectName: ${{ matrix.projectName }}
+      buildMode: ${{ matrix.buildMode }}
+      projectDependenciesJson: ${{ needs.Initialization.outputs.projectDependenciesJson }}
+      secrets: 'licenseFileUrl,insiderSasToken,codeSignCertificateUrl,*codeSignCertificatePassword,keyVaultCertificateUrl,*keyVaultCertificatePassword,keyVaultClientId,gitHubPackagesContext,applicationInsightsConnectionString'
+      publishThisBuildArtifacts: ${{ needs.Initialization.outputs.workflowDepth > 1 }}
+      publishArtifacts: ${{ github.ref_name == 'main' || startswith(github.ref_name, 'release/') || needs.Initialization.outputs.deliveryTargetsJson != '[]' || needs.Initialization.outputs.environmentCount > 0 }}
+      signArtifacts: true
+      useArtifactCache: true
+      useArtifactCache: true
+
+  Build2:
+    needs: [ Initialization, Build1 ]
+    needs: [ Initialization, Build1 ]
+      useArtifactCache: true
+    needs: [ Initialization ]
+      useArtifactCache: true
+    strategy:
+      matrix:
+    if: (!failure()) && (!cancelled()) && (needs.Build1.result == 'success' || needs.Build1.result == 'skipped') && fromJson(needs.Initialization.outputs.buildOrderJson)[1].projectsCount > 0
+        include: ${{ fromJson(needs.Initialization.outputs.buildOrderJson)[0].buildDimensions }}
+      fail-fast: false
+    name: Build ${{ matrix.projectName }} (${{ matrix.buildMode }})
+    uses: ./.github/workflows/_BuildALGoProject.yaml
+    secrets: inherit
+    with:
+      shell: ${{ needs.Initialization.outputs.githubRunnerShell }}
+      runsOn: ${{ needs.Initialization.outputs.githubRunner }}
+      parentTelemetryScopeJson: ${{ needs.Initialization.outputs.telemetryScopeJson }}
+      project: ${{ matrix.project }}
+      projectName: ${{ matrix.projectName }}
+      buildMode: ${{ matrix.buildMode }}
+      projectDependenciesJson: ${{ needs.Initialization.outputs.projectDependenciesJson }}
+      secrets: 'licenseFileUrl,insiderSasToken,codeSignCertificateUrl,*codeSignCertificatePassword,keyVaultCertificateUrl,*keyVaultCertificatePassword,keyVaultClientId,gitHubPackagesContext,applicationInsightsConnectionString'
+      publishThisBuildArtifacts: ${{ needs.Initialization.outputs.workflowDepth > 1 }}
+      publishArtifacts: ${{ github.ref_name == 'main' || startswith(github.ref_name, 'release/') || needs.Initialization.outputs.deliveryTargetsJson != '[]' || needs.Initialization.outputs.environmentCount > 0 }}
+      signArtifacts: true
+      useArtifactCache: true
+
+  Build:
+    needs: [ Initialization, Build2, Build1 ]
+    needs: [ Initialization, Build2, Build1 ]
+      useArtifactCache: true
+    needs: [ Initialization, Build1 ]
+      useArtifactCache: true
+    needs: [ Initialization ]
+      useArtifactCache: true
+    strategy:
+      matrix:
+    if: (!failure()) && (!cancelled()) && (needs.Build2.result == 'success' || needs.Build2.result == 'skipped') && (needs.Build1.result == 'success' || needs.Build1.result == 'skipped') && fromJson(needs.Initialization.outputs.buildOrderJson)[2].projectsCount > 0
         include: ${{ fromJson(needs.Initialization.outputs.buildOrderJson)[2].buildDimensions }}
       fail-fast: false
     name: Build ${{ matrix.projectName }} (${{ matrix.buildMode }})
