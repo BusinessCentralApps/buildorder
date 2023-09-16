@@ -11,8 +11,8 @@ defaults:
     shell: pwsh
 
 env:
-  workflowDepth: 3
   ALGoOrgSettings: ${{ vars.ALGoOrgSettings }}
+  workflowDepth: 3
   ALGoRepoSettings: ${{ vars.ALGoRepoSettings }}
 
 jobs:
@@ -58,10 +58,13 @@ jobs:
           shell: pwsh
           maxBuildDepth: ${{ env.workflowDepth }}
 
+
   Build1:
     needs: [ Initialization ]
-    if: (!failure()) && (!cancelled()) && fromJson(needs.Initialization.outputs.buildOrderJson)[0].projectsCount > 0
+    needs: [ Initialization ]
+      artifactsNameSuffix: 'Current'
     strategy:
+    if: (!failure()) && (!cancelled()) && fromJson(needs.Initialization.outputs.buildOrderJson)[0].projectsCount > 0
       matrix:
         include: ${{ fromJson(needs.Initialization.outputs.buildOrderJson)[0].buildDimensions }}
       fail-fast: false
@@ -82,10 +85,14 @@ jobs:
 
   Build2:
     needs: [ Initialization, Build1 ]
-    if: (!failure()) && (!cancelled()) && (needs.Build1.result == 'success' || needs.Build1.result == 'skipped') && fromJson(needs.Initialization.outputs.buildOrderJson)[1].projectsCount > 0
+    needs: [ Initialization ]
+      artifactsNameSuffix: 'Current'
+    needs: [ Initialization ]
+      artifactsNameSuffix: 'Current'
     strategy:
       matrix:
-        include: ${{ fromJson(needs.Initialization.outputs.buildOrderJson)[1].buildDimensions }}
+    if: (!failure()) && (!cancelled()) && (needs.Build1.result == 'success' || needs.Build1.result == 'skipped') && fromJson(needs.Initialization.outputs.buildOrderJson)[1].projectsCount > 0
+        include: ${{ fromJson(needs.Initialization.outputs.buildOrderJson)[0].buildDimensions }}
       fail-fast: false
     name: Build ${{ matrix.projectName }} (${{ matrix.buildMode }})
     uses: ./.github/workflows/_BuildALGoProject.yaml
@@ -104,9 +111,15 @@ jobs:
 
   Build:
     needs: [ Initialization, Build2, Build1 ]
-    if: (!failure()) && (!cancelled()) && (needs.Build2.result == 'success' || needs.Build2.result == 'skipped') && (needs.Build1.result == 'success' || needs.Build1.result == 'skipped') && fromJson(needs.Initialization.outputs.buildOrderJson)[2].projectsCount > 0
+    needs: [ Initialization, Build1 ]
+      artifactsNameSuffix: 'Current'
+    needs: [ Initialization ]
+      artifactsNameSuffix: 'Current'
+    needs: [ Initialization ]
+      artifactsNameSuffix: 'Current'
     strategy:
       matrix:
+    if: (!failure()) && (!cancelled()) && (needs.Build2.result == 'success' || needs.Build2.result == 'skipped') && (needs.Build1.result == 'success' || needs.Build1.result == 'skipped') && fromJson(needs.Initialization.outputs.buildOrderJson)[2].projectsCount > 0
         include: ${{ fromJson(needs.Initialization.outputs.buildOrderJson)[2].buildDimensions }}
       fail-fast: false
     name: Build ${{ matrix.projectName }} (${{ matrix.buildMode }})
@@ -123,7 +136,6 @@ jobs:
       secrets: 'licenseFileUrl,insiderSasToken,codeSignCertificateUrl,*codeSignCertificatePassword,keyVaultCertificateUrl,*keyVaultCertificatePassword,keyVaultClientId,gitHubPackagesContext,applicationInsightsConnectionString'
       publishThisBuildArtifacts: ${{ needs.Initialization.outputs.workflowDepth > 1 }}
       artifactsNameSuffix: 'Current'
-
   PostProcess:
     needs: [ Initialization, Build ]
     if: always()
