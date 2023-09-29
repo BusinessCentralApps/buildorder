@@ -17,7 +17,7 @@ permissions:
 
 defaults:
   run:
-    shell: pwsh
+    shell: powershell
 
 env:
   ALGoOrgSettings: ${{ vars.ALGoOrgSettings }}
@@ -25,7 +25,7 @@ env:
 
 jobs:
   Initialization:
-    runs-on: [ ubuntu-latest ]
+    runs-on: [ self-hosted, Windows ]
     outputs:
       telemetryScopeJson: ${{ steps.init.outputs.telemetryScopeJson }}
       environmentsMatrixJson: ${{ steps.DetermineDeploymentEnvironments.outputs.EnvironmentsMatrixJson }}
@@ -40,14 +40,14 @@ jobs:
         id: init
         uses: freddydk/AL-Go/Actions/WorkflowInitialize@selfhostedandkeyvault
         with:
-          shell: pwsh
+          shell: powershell
           eventId: "DO0097"
 
       - name: Read settings
         id: ReadSettings
         uses: freddydk/AL-Go/Actions/ReadSettings@selfhostedandkeyvault
         with:
-          shell: pwsh
+          shell: powershell
 
       - name: Determine Deployment Environments
         id: DetermineDeploymentEnvironments
@@ -55,7 +55,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
-          shell: pwsh
+          shell: powershell
           getEnvironments: ${{ github.event.inputs.environmentName }}
           type: 'Publish'
 
@@ -72,7 +72,7 @@ jobs:
         uses: freddydk/AL-Go/Actions/ReadSecrets@selfhostedandkeyvault
         if: steps.DetermineDeploymentEnvironments.outputs.UnknownEnvironment == 1
         with:
-          shell: pwsh
+          shell: powershell
           gitHubSecrets: ${{ toJson(secrets) }}
           getSecrets: '${{ steps.envName.outputs.envName }}-AuthContext,${{ steps.envName.outputs.envName }}_AuthContext,AuthContext'
 
@@ -133,13 +133,13 @@ jobs:
       - name: Read settings
         uses: freddydk/AL-Go/Actions/ReadSettings@selfhostedandkeyvault
         with:
-          shell: pwsh
+          shell: powershell
 
       - name: Read secrets
         id: ReadSecrets
         uses: freddydk/AL-Go/Actions/ReadSecrets@selfhostedandkeyvault
         with:
-          shell: pwsh
+          shell: powershell
           gitHubSecrets: ${{ toJson(secrets) }}
           getSecrets: '${{ steps.envName.outputs.envName }}-AuthContext,${{ steps.envName.outputs.envName }}_AuthContext,AuthContext,${{ steps.envName.outputs.envName }}-EnvironmentName,${{ steps.envName.outputs.envName }}_EnvironmentName,EnvironmentName,projects'
 
@@ -148,7 +148,7 @@ jobs:
         env:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
         with:
-          shell: pwsh
+          shell: powershell
           environmentName: ${{ matrix.environment }}
           artifacts: ${{ github.event.inputs.appVersion }}
           type: 'Publish'
@@ -156,7 +156,7 @@ jobs:
 
   PostProcess:
     if: always()
-    runs-on: [ ubuntu-latest ]
+    runs-on: [ self-hosted, Windows ]
     needs: [ Initialization, Deploy ]
     steps:
       - name: Checkout
@@ -166,6 +166,6 @@ jobs:
         id: PostProcess
         uses: freddydk/AL-Go/Actions/WorkflowPostProcess@selfhostedandkeyvault
         with:
-          shell: pwsh
+          shell: powershell
           eventId: "DO0097"
           telemetryScopeJson: ${{ needs.Initialization.outputs.telemetryScopeJson }}

@@ -11,7 +11,7 @@ on:
 
 defaults:
   run:
-    shell: pwsh
+    shell: powershell
 
 permissions:
   contents: read
@@ -24,7 +24,7 @@ env:
 
 jobs:
   Initialization:
-    runs-on: [ ubuntu-latest ]
+    runs-on: [ self-hosted, Windows ]
     outputs:
       telemetryScopeJson: ${{ steps.init.outputs.telemetryScopeJson }}
       environmentsMatrixJson: ${{ steps.DetermineDeploymentEnvironments.outputs.EnvironmentsMatrixJson }}
@@ -47,14 +47,14 @@ jobs:
         id: init
         uses: freddydk/AL-Go/Actions/WorkflowInitialize@selfhostedandkeyvault
         with:
-          shell: pwsh
+          shell: powershell
           eventId: "DO0091"
 
       - name: Read settings
         id: ReadSettings
         uses: freddydk/AL-Go/Actions/ReadSettings@selfhostedandkeyvault
         with:
-          shell: pwsh
+          shell: powershell
           get: type
 
       - name: Determine Workflow Depth
@@ -66,14 +66,14 @@ jobs:
         id: determineProjectsToBuild
         uses: freddydk/AL-Go/Actions/DetermineProjectsToBuild@selfhostedandkeyvault
         with:
-          shell: pwsh
+          shell: powershell
           maxBuildDepth: ${{ env.workflowDepth }}
 
       - name: Determine Delivery Target Secrets
         id: DetermineDeliveryTargetSecrets
         uses: freddydk/AL-Go/Actions/DetermineDeliveryTargets@selfhostedandkeyvault
         with:
-          shell: pwsh
+          shell: powershell
           projectsJson: '${{ steps.determineProjectsToBuild.outputs.ProjectsJson }}'
           checkContextSecrets: 'N'
 
@@ -81,7 +81,7 @@ jobs:
         id: ReadSecrets
         uses: freddydk/AL-Go/Actions/ReadSecrets@selfhostedandkeyvault
         with:
-          shell: pwsh
+          shell: powershell
           gitHubSecrets: ${{ toJson(secrets) }}
           getSecrets: ${{ steps.DetermineDeliveryTargetSecrets.outputs.ContextSecrets }}
 
@@ -91,7 +91,7 @@ jobs:
         env:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
         with:
-          shell: pwsh
+          shell: powershell
           projectsJson: '${{ steps.determineProjectsToBuild.outputs.ProjectsJson }}'
           checkContextSecrets: 'Y'
 
@@ -101,12 +101,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
-          shell: pwsh
+          shell: powershell
           getEnvironments: '*'
           type: 'CD'
 
   CheckForUpdates:
-    runs-on: [ ubuntu-latest ]
+    runs-on: [ self-hosted, Windows ]
     needs: [ Initialization ]
     steps:
       - name: Checkout
@@ -115,13 +115,13 @@ jobs:
       - name: Read settings
         uses: freddydk/AL-Go/Actions/ReadSettings@selfhostedandkeyvault
         with:
-          shell: pwsh
+          shell: powershell
           get: templateUrl
 
       - name: Check for updates to AL-Go system files
         uses: freddydk/AL-Go/Actions/CheckForUpdates@selfhostedandkeyvault
         with:
-          shell: pwsh
+          shell: powershell
           parentTelemetryScopeJson: ${{ needs.Initialization.outputs.telemetryScopeJson }}
           templateUrl: ${{ env.templateUrl }}
 
@@ -217,7 +217,7 @@ jobs:
       - name: Read settings
         uses: freddydk/AL-Go/Actions/ReadSettings@selfhostedandkeyvault
         with:
-          shell: pwsh
+          shell: powershell
 
       - name: EnvName
         id: envName
@@ -230,7 +230,7 @@ jobs:
         id: ReadSecrets
         uses: freddydk/AL-Go/Actions/ReadSecrets@selfhostedandkeyvault
         with:
-          shell: pwsh
+          shell: powershell
           gitHubSecrets: ${{ toJson(secrets) }}
           getSecrets: '${{ steps.envName.outputs.envName }}-AuthContext,${{ steps.envName.outputs.envName }}_AuthContext,AuthContext,${{ steps.envName.outputs.envName }}-EnvironmentName,${{ steps.envName.outputs.envName }}_EnvironmentName,EnvironmentName,projects'
 
@@ -239,7 +239,7 @@ jobs:
         env:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
         with:
-          shell: pwsh
+          shell: powershell
           environmentName: ${{ matrix.environment }}
           artifacts: '.artifacts'
           type: 'CD'
@@ -252,7 +252,7 @@ jobs:
       matrix:
         deliveryTarget: ${{ fromJson(needs.Initialization.outputs.deliveryTargetsJson) }}
       fail-fast: false
-    runs-on: [ ubuntu-latest ]
+    runs-on: [ self-hosted, Windows ]
     name: Deliver to ${{ matrix.deliveryTarget }}
     steps:
       - name: Checkout
@@ -266,13 +266,13 @@ jobs:
       - name: Read settings
         uses: freddydk/AL-Go/Actions/ReadSettings@selfhostedandkeyvault
         with:
-          shell: pwsh
+          shell: powershell
 
       - name: Read secrets
         id: ReadSecrets
         uses: freddydk/AL-Go/Actions/ReadSecrets@selfhostedandkeyvault
         with:
-          shell: pwsh
+          shell: powershell
           gitHubSecrets: ${{ toJson(secrets) }}
           getSecrets: '${{ matrix.deliveryTarget }}Context'
 
@@ -281,7 +281,7 @@ jobs:
         env:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
         with:
-          shell: pwsh
+          shell: powershell
           type: 'CD'
           projects: ${{ needs.Initialization.outputs.projects }}
           deliveryTarget: ${{ matrix.deliveryTarget }}
@@ -289,7 +289,7 @@ jobs:
 
   PostProcess:
     if: (!cancelled())
-    runs-on: [ ubuntu-latest ]
+    runs-on: [ self-hosted, Windows ]
     needs: [ Initialization, Build, Deploy, Deliver ]
     steps:
       - name: Checkout
@@ -299,6 +299,6 @@ jobs:
         id: PostProcess
         uses: freddydk/AL-Go/Actions/WorkflowPostProcess@selfhostedandkeyvault
         with:
-          shell: pwsh
+          shell: powershell
           eventId: "DO0091"
           telemetryScopeJson: ${{ needs.Initialization.outputs.telemetryScopeJson }}

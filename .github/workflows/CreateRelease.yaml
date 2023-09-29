@@ -48,7 +48,7 @@ concurrency: release
 
 defaults:
   run:
-    shell: pwsh
+    shell: powershell
 
 env:
   ALGoOrgSettings: ${{ vars.ALGoOrgSettings }}
@@ -56,7 +56,7 @@ env:
 
 jobs:
   CreateRelease:
-    runs-on: [ ubuntu-latest ]
+    runs-on: [ self-hosted, Windows ]
     outputs:
       telemetryScopeJson: ${{ steps.init.outputs.telemetryScopeJson }}
       artifacts: ${{ steps.analyzeartifacts.outputs.artifacts }}
@@ -71,26 +71,26 @@ jobs:
         id: init
         uses: freddydk/AL-Go/Actions/WorkflowInitialize@selfhostedandkeyvault
         with:
-          shell: pwsh
+          shell: powershell
           eventId: "DO0094"
 
       - name: Read settings
         id: ReadSettings
         uses: freddydk/AL-Go/Actions/ReadSettings@selfhostedandkeyvault
         with:
-          shell: pwsh
+          shell: powershell
           get: templateUrl,repoName
 
       - name: Determine Projects
         id: determineProjects
         uses: freddydk/AL-Go/Actions/DetermineProjectsToBuild@selfhostedandkeyvault
         with:
-          shell: pwsh
+          shell: powershell
 
       - name: Check for updates to AL-Go system files
         uses: freddydk/AL-Go/Actions/CheckForUpdates@selfhostedandkeyvault
         with:
-          shell: pwsh
+          shell: powershell
           parentTelemetryScopeJson: ${{ steps.init.outputs.telemetryScopeJson }}
           templateUrl: ${{ env.templateUrl }}
 
@@ -175,7 +175,7 @@ jobs:
         id: createreleasenotes
         uses: freddydk/AL-Go/Actions/CreateReleaseNotes@selfhostedandkeyvault
         with:
-          shell: pwsh
+          shell: powershell
           parentTelemetryScopeJson: ${{ steps.init.outputs.telemetryScopeJson }}
           tag_name: ${{ github.event.inputs.tag }}
           target_commitish: ${{ steps.analyzeartifacts.outputs.commitish }}
@@ -206,7 +206,7 @@ jobs:
             core.setOutput('releaseId', releaseId);
 
   UploadArtifacts:
-    runs-on: [ ubuntu-latest ]
+    runs-on: [ self-hosted, Windows ]
     needs: [ CreateRelease ]
     strategy:
       matrix: ${{ fromJson(needs.CreateRelease.outputs.artifacts) }}
@@ -218,13 +218,13 @@ jobs:
       - name: Read settings
         uses: freddydk/AL-Go/Actions/ReadSettings@selfhostedandkeyvault
         with:
-          shell: pwsh
+          shell: powershell
 
       - name: Read secrets
         id: ReadSecrets
         uses: freddydk/AL-Go/Actions/ReadSecrets@selfhostedandkeyvault
         with:
-          shell: pwsh
+          shell: powershell
           gitHubSecrets: ${{ toJson(secrets) }}
           getSecrets: 'nuGetContext,storageContext'
 
@@ -264,7 +264,7 @@ jobs:
         env:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
         with:
-          shell: pwsh
+          shell: powershell
           type: 'Release'
           projects: ${{ matrix.project }}
           deliveryTarget: 'NuGet'
@@ -277,7 +277,7 @@ jobs:
         env:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
         with:
-          shell: pwsh
+          shell: powershell
           type: 'Release'
           projects: ${{ matrix.project }}
           deliveryTarget: 'Storage'
@@ -286,7 +286,7 @@ jobs:
 
   CreateReleaseBranch:
     if: ${{ github.event.inputs.createReleaseBranch=='Y' }}
-    runs-on: [ ubuntu-latest ]
+    runs-on: [ self-hosted, Windows ]
     needs: [ CreateRelease, UploadArtifacts ]
     steps:
       - name: Checkout
@@ -305,19 +305,19 @@ jobs:
 
   UpdateVersionNumber:
     if: ${{ github.event.inputs.updateVersionNumber!='' }}
-    runs-on: [ ubuntu-latest ]
+    runs-on: [ self-hosted, Windows ]
     needs: [ CreateRelease, UploadArtifacts ]
     steps:
       - name: Read settings
         uses: freddydk/AL-Go/Actions/ReadSettings@selfhostedandkeyvault
         with:
-          shell: pwsh
+          shell: powershell
 
       - name: Read secrets
         id: ReadSecrets
         uses: freddydk/AL-Go/Actions/ReadSecrets@selfhostedandkeyvault
         with:
-          shell: pwsh
+          shell: powershell
           gitHubSecrets: ${{ toJson(secrets) }}
           getSecrets: 'TokenForPush'
           useGhTokenWorkflowForPush: '${{ github.event.inputs.useGhTokenWorkflow }}'
@@ -325,7 +325,7 @@ jobs:
       - name: Update Version Number
         uses: freddydk/AL-Go/Actions/IncrementVersionNumber@selfhostedandkeyvault
         with:
-          shell: pwsh
+          shell: powershell
           token: ${{ steps.ReadSecrets.outputs.TokenForPush }}
           parentTelemetryScopeJson: ${{ needs.CreateRelease.outputs.telemetryScopeJson }}
           versionNumber: ${{ github.event.inputs.updateVersionNumber }}
@@ -333,7 +333,7 @@ jobs:
 
   PostProcess:
     if: always()
-    runs-on: [ ubuntu-latest ]
+    runs-on: [ self-hosted, Windows ]
     needs: [ CreateRelease, UploadArtifacts, CreateReleaseBranch, UpdateVersionNumber ]
     steps:
       - name: Checkout
@@ -343,6 +343,6 @@ jobs:
         id: PostProcess
         uses: freddydk/AL-Go/Actions/WorkflowPostProcess@selfhostedandkeyvault
         with:
-          shell: pwsh
+          shell: powershell
           eventId: "DO0094"
           telemetryScopeJson: ${{ needs.CreateRelease.outputs.telemetryScopeJson }}
