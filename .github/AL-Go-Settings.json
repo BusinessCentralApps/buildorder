@@ -1,6 +1,6 @@
 {
   "type": "PTE",
-  "templateUrl": "https://github.com/freddydk/AL-Go@nuget",
+  "templateUrl": "https://github.com/microsoft/AL-Go-PTE@preview",
   "CICDPushBranches": [
     "main",
     "release/*",
@@ -24,5 +24,5 @@
       "test"
     ]
   },
-  "templateSha": "679d5cf17e51b1cd558453f429df6e59bf2ce95c"
+  "templateSha": "0476547896ebcd3ba5455b3e0e59b48c0d4a26ca"
 }
