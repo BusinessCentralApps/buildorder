@@ -25,6 +25,9 @@
       "test"
     ]
   },
+  "DeployToTest": {
+    "EnvironmentType": "Test"
+  },
   "DeliverToStorage": {
     "CreateContainerIfNotExist": true
   },
