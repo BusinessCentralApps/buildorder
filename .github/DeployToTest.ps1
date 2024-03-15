@@ -16,16 +16,19 @@ Param(
 $ErrorActionPreference = "Stop"
 $parameters | ConvertTo-Json -Depth 99 | Out-Host
 
- $parameters.apps | ForEach-Object {
+$parameters.apps | ForEach-Object {
     Write-Host $_
     Write-Host $_.GetType()
     Get-ChildItem -Path $_ -recurse | ForEach-Object { Write-Host "- $($_.FullName)" }
 }
 
+$parameters.apps.GetType()
+$apps = $parameters.apps | ForEach-Object { $_.ToString() }
+
 $tempPath = Join-Path ([System.IO.Path]::GetTempPath()) ([GUID]::NewGuid().ToString())
 New-Item -ItemType Directory -Path $tempPath | Out-Null
 
-Copy-AppFilesToFolder -folder $tempPath -appsFolder $parameters.apps | Out-Null
+Copy-AppFilesToFolder -folder $tempPath -appsFolder $apps | Out-Null
 $appsList = Get-ChildItem -Path $tempPath -Recurse -Filter *.app
 
 if (-not $appsList -or $appsList.Count -eq 0) {
@@ -34,5 +37,5 @@ if (-not $appsList -or $appsList.Count -eq 0) {
 }
 
 Write-Host "Apps:"
-$appsList | ForEach-Object { Write-Host "- $($_.Name)" }
+$appsList | ForEach-Object { Write-Host "- $($_.FullName)" }
 
