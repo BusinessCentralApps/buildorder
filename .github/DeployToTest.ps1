@@ -15,11 +15,16 @@ Param(
 
 $parameters | ConvertTo-Json -Depth 99 | Out-Host
 
+$parameters.apps | ForEach-Object {
+    Write-Host $_
+    Get-ChildItem -Path $_ -recurse | ForEach-Object { Write-Host "- $($_.FullName)" }
+}
+
 $tempPath = Join-Path ([System.IO.Path]::GetTempPath()) ([GUID]::NewGuid().ToString())
 New-Item -ItemType Directory -Path $tempPath | Out-Null
 
 Copy-AppFilesToFolder -folder $tempPath -appsFolder $apps | Out-Null
-$appsList = Get-ChildItem -Path $tempPath -Filter *.app
+$appsList = Get-ChildItem -Path $tempPath -Recurse -Filter *.app
 
 if (-not $appsList -or $appsList.Count -eq 0) {
     Write-Host "::error::No apps to publish found."
