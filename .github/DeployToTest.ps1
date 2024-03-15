@@ -15,9 +15,11 @@ Param(
 
 $parameters | ConvertTo-Json -Depth 99 | Out-Host
 
-$parameters.apps | ForEach-Object {
+$apps = $parameters.apps | ForEach-Object {
     Write-Host $_
+    Write-Host $_.GetType()
     Get-ChildItem -Path $_ -recurse | ForEach-Object { Write-Host "- $($_.FullName)" }
+    "$_"
 }
 
 $tempPath = Join-Path ([System.IO.Path]::GetTempPath()) ([GUID]::NewGuid().ToString())
