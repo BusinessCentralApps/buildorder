@@ -23,12 +23,14 @@ $parameters.apps | ForEach-Object {
 }
 
 $parameters.apps.GetType()
-$apps = $parameters.apps | ForEach-Object { $_.ToString() }
-
+$parameters.apps | ForEach-Object {
+    Write-Host "Copy $_"
+    Write-Host $_.GetType()
+}
 $tempPath = Join-Path ([System.IO.Path]::GetTempPath()) ([GUID]::NewGuid().ToString())
 New-Item -ItemType Directory -Path $tempPath | Out-Null
 
-Copy-AppFilesToFolder -folder $tempPath -appsFolder $apps | Out-Null
+Copy-AppFilesToFolder -folder $tempPath -appsFolder $parameters.apps | Out-Null
 $appsList = Get-ChildItem -Path $tempPath -Recurse -Filter *.app
 
 if (-not $appsList -or $appsList.Count -eq 0) {
