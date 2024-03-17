@@ -42,7 +42,7 @@ jobs:
       workflowDepth: ${{ steps.DetermineWorkflowDepth.outputs.WorkflowDepth }}
     steps:
       - name: Dump Workflow Information
-        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@PPP
+        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@copyapps
         with:
           shell: powershell
 
@@ -53,14 +53,14 @@ jobs:
 
       - name: Initialize the workflow
         id: init
-        uses: freddydk/AL-Go/Actions/WorkflowInitialize@PPP
+        uses: freddydk/AL-Go/Actions/WorkflowInitialize@copyapps
         with:
           shell: powershell
           eventId: "DO0091"
 
       - name: Read settings
         id: ReadSettings
-        uses: freddydk/AL-Go/Actions/ReadSettings@PPP
+        uses: freddydk/AL-Go/Actions/ReadSettings@copyapps
         with:
           shell: powershell
           get: type
@@ -72,14 +72,14 @@ jobs:
 
       - name: Determine Projects To Build
         id: determineProjectsToBuild
-        uses: freddydk/AL-Go/Actions/DetermineProjectsToBuild@PPP
+        uses: freddydk/AL-Go/Actions/DetermineProjectsToBuild@copyapps
         with:
           shell: powershell
           maxBuildDepth: ${{ env.workflowDepth }}
 
       - name: Determine Delivery Target Secrets
         id: DetermineDeliveryTargetSecrets
-        uses: freddydk/AL-Go/Actions/DetermineDeliveryTargets@PPP
+        uses: freddydk/AL-Go/Actions/DetermineDeliveryTargets@copyapps
         with:
           shell: powershell
           projectsJson: '${{ steps.determineProjectsToBuild.outputs.ProjectsJson }}'
@@ -87,7 +87,7 @@ jobs:
 
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@PPP
+        uses: freddydk/AL-Go/Actions/ReadSecrets@copyapps
         with:
           shell: powershell
           gitHubSecrets: ${{ toJson(secrets) }}
@@ -95,7 +95,7 @@ jobs:
 
       - name: Determine Delivery Targets
         id: DetermineDeliveryTargets
-        uses: freddydk/AL-Go/Actions/DetermineDeliveryTargets@PPP
+        uses: freddydk/AL-Go/Actions/DetermineDeliveryTargets@copyapps
         env:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
         with:
@@ -105,7 +105,7 @@ jobs:
 
       - name: Determine Deployment Environments
         id: DetermineDeploymentEnvironments
-        uses: freddydk/AL-Go/Actions/DetermineDeploymentEnvironments@PPP
+        uses: freddydk/AL-Go/Actions/DetermineDeploymentEnvironments@copyapps
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
@@ -121,13 +121,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@PPP
+        uses: freddydk/AL-Go/Actions/ReadSettings@copyapps
         with:
           shell: powershell
           get: templateUrl
 
       - name: Check for updates to AL-Go system files
-        uses: freddydk/AL-Go/Actions/CheckForUpdates@PPP
+        uses: freddydk/AL-Go/Actions/CheckForUpdates@copyapps
         with:
           shell: powershell
           templateUrl: ${{ env.templateUrl }}
@@ -228,7 +228,7 @@ jobs:
           path: '.artifacts'
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@PPP
+        uses: freddydk/AL-Go/Actions/ReadSettings@copyapps
         with:
           shell: powershell
 
@@ -237,7 +237,7 @@ jobs:
         uses: actions/configure-pages@v4
 
       - name: Build Reference Documentation
-        uses: freddydk/AL-Go/Actions/BuildReferenceDocumentation@PPP
+        uses: freddydk/AL-Go/Actions/BuildReferenceDocumentation@copyapps
         with:
           shell: powershell
           artifacts: '.artifacts'
@@ -271,10 +271,9 @@ jobs:
           path: '.artifacts'
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@PPP
+        uses: freddydk/AL-Go/Actions/ReadSettings@copyapps
         with:
           shell: powershell
-          get: type,powerPlatformSolutionFolder
 
       - name: EnvName
         id: envName
@@ -285,34 +284,22 @@ jobs:
 
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@PPP
+        uses: freddydk/AL-Go/Actions/ReadSecrets@copyapps
         with:
           shell: powershell
           gitHubSecrets: ${{ toJson(secrets) }}
           getSecrets: '${{ steps.envName.outputs.envName }}-AuthContext,${{ steps.envName.outputs.envName }}_AuthContext,AuthContext,${{ steps.envName.outputs.envName }}-EnvironmentName,${{ steps.envName.outputs.envName }}_EnvironmentName,EnvironmentName,projects'
 
-      - name: Deploy AL
+      - name: Deploy
         id: Deploy
-        uses: freddydk/AL-Go/Actions/Deploy@PPP
+        uses: freddydk/AL-Go/Actions/Deploy@copyapps
         env:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
         with:
           shell: powershell
           environmentName: ${{ matrix.environment }}
-          artifactsFolder: '.artifacts'
+          artifacts: '.artifacts'
           type: 'CD'
-          deploymentEnvironmentsJson: ${{ needs.Initialization.outputs.deploymentEnvironmentsJson }}
-
-      - name: Deploy PP
-        if: env.type == 'PTE' && env.powerPlatformSolutionFolder != ''
-        uses: freddydk/AL-Go/Actions/DeployPowerPlatform@PPP
-        env:
-          Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
-        with:
-          shell: powershell
-          actionsRepo: 'freddydk/AL-Go/Actions@PPP'
-          environmentName: ${{ matrix.environment }}
-          artifactsFolder: '.artifacts'
           deploymentEnvironmentsJson: ${{ needs.Initialization.outputs.deploymentEnvironmentsJson }}
 
   Deliver:
@@ -334,20 +321,20 @@ jobs:
           path: '.artifacts'
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@PPP
+        uses: freddydk/AL-Go/Actions/ReadSettings@copyapps
         with:
           shell: powershell
 
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@PPP
+        uses: freddydk/AL-Go/Actions/ReadSecrets@copyapps
         with:
           shell: powershell
           gitHubSecrets: ${{ toJson(secrets) }}
           getSecrets: '${{ matrix.deliveryTarget }}Context'
 
       - name: Deliver
-        uses: freddydk/AL-Go/Actions/Deliver@PPP
+        uses: freddydk/AL-Go/Actions/Deliver@copyapps
         env:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
         with:
@@ -367,7 +354,7 @@ jobs:
 
       - name: Finalize the workflow
         id: PostProcess
-        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@PPP
+        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@copyapps
         with:
           shell: powershell
           eventId: "DO0091"
