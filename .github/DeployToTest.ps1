@@ -30,7 +30,7 @@ $parameters.apps | ForEach-Object {
 $tempPath = Join-Path ([System.IO.Path]::GetTempPath()) ([GUID]::NewGuid().ToString())
 New-Item -ItemType Directory -Path $tempPath | Out-Null
 
-Copy-AppFilesToFolder -folder $tempPath -appsFolder $parameters.apps | Out-Null
+Copy-AppFilesToFolder -appFiles $parameters.apps -folder $tempPath | Out-Null
 $appsList = Get-ChildItem -Path $tempPath -Recurse -Filter *.app
 
 if (-not $appsList -or $appsList.Count -eq 0) {
