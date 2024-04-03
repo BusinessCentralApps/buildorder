@@ -1,6 +1,6 @@
 {
   "type": "PTE",
-  "templateUrl": "https://github.com/freddydk/AL-Go@PPP-split",
+  "templateUrl": "https://github.com/freddydk/AL-Go@PPP",
   "CICDPushBranches": [
     "main",
     "release/*",
@@ -31,6 +31,6 @@
   "DeliverToStorage": {
     "CreateContainerIfNotExist": true
   },
-  "templateSha": "373ee0840aba4b390cdd827f8b3b2be70ebbcd64",
+  "templateSha": "a561e8ea74622b4707d383ac706fc63b7871912d",
   "RepoVersion": "1.0"
 }
