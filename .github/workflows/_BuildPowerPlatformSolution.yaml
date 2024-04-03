@@ -46,13 +46,13 @@ env:
   ALGoRepoSettings: ${{ vars.ALGoRepoSettings }}
 
 jobs:
-  BuildALGoProject:
+  BuildPowerPlatformSolution:
     needs: [ ]
     runs-on: ${{ fromJson(inputs.runsOn) }}
     defaults:
       run:
         shell: ${{ inputs.shell }}
-    name: 'PP ${{ inputs.projectName }}'
+    name: '${{ inputs.projectName }} (PowerPlatform)'
     steps:
       - name: Checkout
         uses: actions/checkout@v4

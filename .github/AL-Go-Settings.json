@@ -31,6 +31,6 @@
   "DeliverToStorage": {
     "CreateContainerIfNotExist": true
   },
-  "templateSha": "4a341365b1fe05b287218f5aa7be01874dc67377",
+  "templateSha": "4070a5b0f88e59516eed8e95c0407770c1063ad6",
   "RepoVersion": "1.0"
 }
