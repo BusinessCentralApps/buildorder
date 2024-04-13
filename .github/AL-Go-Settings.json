@@ -32,5 +32,6 @@
     "CreateContainerIfNotExist": true
   },
   "templateSha": "a301f48233c44284b81a2a7af34679b17958c3d8",
-  "RepoVersion": "1.0"
+  "RepoVersion": "1.0",
+  "earliestArtifact": true
 }
