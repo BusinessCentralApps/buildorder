@@ -29,7 +29,7 @@ jobs:
       workflowDepth: ${{ steps.DetermineWorkflowDepth.outputs.WorkflowDepth }}
     steps:
       - name: Dump Workflow Information
-        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@issue1009
+        uses: microsoft/AL-Go/Actions/DumpWorkflowInfo@f6bfb8fa422ba66412aea71cf1e396b0f3032ff4
         with:
           shell: powershell
 
@@ -40,14 +40,14 @@ jobs:
 
       - name: Initialize the workflow
         id: init
-        uses: freddydk/AL-Go/Actions/WorkflowInitialize@issue1009
+        uses: microsoft/AL-Go/Actions/WorkflowInitialize@f6bfb8fa422ba66412aea71cf1e396b0f3032ff4
         with:
           shell: powershell
           eventId: "DO0101"
 
       - name: Read settings
         id: ReadSettings
-        uses: freddydk/AL-Go/Actions/ReadSettings@issue1009
+        uses: microsoft/AL-Go/Actions/ReadSettings@f6bfb8fa422ba66412aea71cf1e396b0f3032ff4
         with:
           shell: powershell
 
@@ -58,7 +58,7 @@ jobs:
 
       - name: Determine Projects To Build
         id: determineProjectsToBuild
-        uses: freddydk/AL-Go/Actions/DetermineProjectsToBuild@issue1009
+        uses: microsoft/AL-Go/Actions/DetermineProjectsToBuild@f6bfb8fa422ba66412aea71cf1e396b0f3032ff4
         with:
           shell: powershell
           maxBuildDepth: ${{ env.workflowDepth }}
@@ -139,7 +139,7 @@ jobs:
 
       - name: Finalize the workflow
         id: PostProcess
-        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@issue1009
+        uses: microsoft/AL-Go/Actions/WorkflowPostProcess@f6bfb8fa422ba66412aea71cf1e396b0f3032ff4
         with:
           shell: powershell
           eventId: "DO0101"
