@@ -1,6 +1,6 @@
 {
   "type": "PTE",
-  "templateUrl": "https://github.com/microsoft/AL-Go-PTE@preview",
+  "templateUrl": "https://github.com/freddydk/AL-Go@issue1018",
   "CICDPushBranches": [
     "main",
     "release/*",
@@ -31,7 +31,7 @@
   "DeliverToStorage": {
     "CreateContainerIfNotExist": true
   },
-  "templateSha": "a301f48233c44284b81a2a7af34679b17958c3d8",
+  "templateSha": "4425a43ea94f57e2a44a47e0564bec6c540a4b69",
   "RepoVersion": "1.0",
   "earliestArtifact": true
 }
