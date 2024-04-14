@@ -4,4 +4,5 @@
   "testFolders": [],
   "bcptTestFolders": [],
   "repoVersion": "3.3",
+  "useEarliestArtifact": true
 }
