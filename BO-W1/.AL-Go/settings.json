@@ -3,5 +3,5 @@
   "appFolders": [],
   "testFolders": [],
   "repoVersion": "3.3",
-  "artifact": "https://bcartifacts.azureedge.net/sandbox/22.4.59114.59574/w1"
+  "useEarliestArtifact": true
 }
