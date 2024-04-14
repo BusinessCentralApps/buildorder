@@ -3,5 +3,6 @@
   "appFolders": [],
   "testFolders": [],
   "repoVersion": "3.3",
-  "gitHubRunner": "windows-latest"
+  "gitHubRunner": "windows-latest",
+  "useCompilerFolder": false
 }
