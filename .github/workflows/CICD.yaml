@@ -26,7 +26,7 @@ env:
 jobs:
   Initialization:
     needs: [ ]
-    runs-on: windows-latest
+    runs-on: [ ubuntu-latest ]
     outputs:
       telemetryScopeJson: ${{ steps.init.outputs.telemetryScopeJson }}
       environmentsMatrixJson: ${{ steps.DetermineDeploymentEnvironments.outputs.EnvironmentsMatrixJson }}
@@ -274,10 +274,11 @@ jobs:
       - name: Read settings
         uses: freddydk/AL-Go/Actions/ReadSettings@issue1018
         with:
-          shell: pwsh
+          shell: ${{ matrix.shell }}
 
       - name: EnvName
         id: envName
+        shell: ${{ matrix.shell }}
         run: |
           $errorActionPreference = "Stop"; $ProgressPreference = "SilentlyContinue"; Set-StrictMode -Version 2.0
           $envName = '${{ matrix.environment }}'.split(' ')[0]
@@ -287,7 +288,7 @@ jobs:
         id: ReadSecrets
         uses: freddydk/AL-Go/Actions/ReadSecrets@issue1018
         with:
-          shell: pwsh
+          shell: ${{ matrix.shell }}
           gitHubSecrets: ${{ toJson(secrets) }}
           getSecrets: '${{ steps.envName.outputs.envName }}-AuthContext,${{ steps.envName.outputs.envName }}_AuthContext,AuthContext,${{ steps.envName.outputs.envName }}-EnvironmentName,${{ steps.envName.outputs.envName }}_EnvironmentName,EnvironmentName,projects'
 
@@ -297,7 +298,7 @@ jobs:
         env:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
         with:
-          shell: pwsh
+          shell: ${{ matrix.shell }}
           environmentName: ${{ matrix.environment }}
           artifacts: '.artifacts'
           type: 'CD'
