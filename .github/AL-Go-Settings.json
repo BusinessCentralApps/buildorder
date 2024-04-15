@@ -15,10 +15,10 @@
   "useProjectDependencies": true,
   "useCompilerFolder": true,
   "doNotPublishApps": true,
-  "runs-on": "ubuntu-latest",
-  "shell": "pwsh",
+  "runs-on": "windows-latest",
+  "shell": "powershell",
   "gitHubRunner": "windows-latest",
-  "githubRunnerShell": "powershell",
+  "githubRunnerShell": "pwsh",
   "ALDoc": {
     "maxReleases": 0,
     "continuousDeployment": true,
@@ -27,7 +27,9 @@
     ]
   },
   "DeployToTest": {
-    "EnvironmentType": "Test"
+    "EnvironmentType": "Test",
+    "runs-on": [ "ubuntu-latest" ],
+    "shell": "pwsh"
   },
   "DeliverToStorage": {
     "CreateContainerIfNotExist": true
