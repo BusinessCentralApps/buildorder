@@ -34,7 +34,7 @@
   },
   "templateSha": "83a82cf79bd923ce7c802a2af92980fc2e5c981d",
   "RepoVersion": "1.0",
-  "useEarliestArtifact": true,
+  "artifact": "//*//first",
   "vsixFile": "latest",
   "customCodeCops": [
     "https://github.com/StefanMaron/BusinessCentral.LinterCop/releases/download/v0.30.0/BusinessCentral.LinterCop.current.dll"
