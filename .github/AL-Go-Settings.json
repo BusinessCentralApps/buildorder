@@ -28,13 +28,15 @@
   },
   "DeployToTest": {
     "EnvironmentType": "Test",
-    "runs-on": [ "ubuntu-latest" ],
+    "runs-on": [
+      "ubuntu-latest"
+    ],
     "shell": "pwsh"
   },
   "DeliverToStorage": {
     "CreateContainerIfNotExist": true
   },
-  "templateSha": "03e263d5757e756232504ae341547c256eb7f1d7",
+  "templateSha": "faeaff513e3cefd29b071d6904759c640b30fe6a",
   "RepoVersion": "1.0",
   "artifact": "//*//first",
   "vsixFile": "latest",
