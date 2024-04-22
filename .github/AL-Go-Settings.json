@@ -18,7 +18,7 @@
   "runs-on": "windows-latest",
   "shell": "powershell",
   "gitHubRunner": "windows-latest",
-  "githubRunnerShell": "pwsh",
+  "githubRunnerShell": "powershell",
   "ALDoc": {
     "maxReleases": 0,
     "continuousDeployment": true,
