@@ -17,8 +17,8 @@
   "doNotPublishApps": true,
   "runs-on": "windows-latest",
   "shell": "powershell",
-  "gitHubRunner": "windows-latest",
-  "githubRunnerShell": "powershell",
+  "gitHubRunner": "ubuntu-latest",
+  "githubRunnerShell": "pwsh",
   "ALDoc": {
     "maxReleases": 0,
     "continuousDeployment": true,
