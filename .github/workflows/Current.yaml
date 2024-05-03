@@ -131,7 +131,7 @@ jobs:
       artifactsNameSuffix: 'Current'
 
   PostProcess:
-    needs: [ Initialization, Build2, Build1, Build, Deploy, Deliver, DeployALDoc ]
+    needs: [ Initialization, Build2, Build1, Build, BuildPP ]
     if: always()
     runs-on: [ windows-latest ]
     steps:
