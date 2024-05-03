@@ -275,8 +275,8 @@ jobs:
         uses: actions/deploy-pages@v4
 
   Deploy:
-    needs: [ Initialization, Build, BuildPP ]
-    if: (!cancelled()) && (needs.Build1.result == 'success' || needs.Build1.result == 'skipped') && (needs.Build2.result == 'success' || needs.Build2.result == 'skipped') && (needs.Build.result == 'success' || needs.Build.result == 'skipped') && (needs.BuildPP.result == 'success' || needs.BuildPP.result == 'skipped') && needs.Initialization.outputs.environmentCount > 0
+    needs: [ Initialization, Build2, Build1, Build, BuildPP ]
+    if: (!cancelled()) && (needs.Build2.result == 'success' || needs.Build2.result == 'skipped') && (needs.Build1.result == 'success' || needs.Build1.result == 'skipped') && (needs.Build.result == 'success' || needs.Build.result == 'skipped') && (needs.BuildPP.result == 'success' || needs.BuildPP.result == 'skipped') && needs.Initialization.outputs.environmentCount > 0
     strategy: ${{ fromJson(needs.Initialization.outputs.environmentsMatrixJson) }}
     runs-on: ${{ fromJson(matrix.os) }}
     name: Deploy to ${{ matrix.environment }}
@@ -339,47 +339,46 @@ jobs:
           artifactsFolder: '.artifacts'
           deploymentEnvironmentsJson: ${{ needs.Initialization.outputs.deploymentEnvironmentsJson }}
 
-  Deliver:
-    needs: [ Initialization, Build, BuildPP ]
-    if: (!cancelled()) && (needs.Build1.result == 'success' || needs.Build1.result == 'skipped') && (needs.Build2.result == 'success' || needs.Build2.result == 'skipped') && (needs.Build.result == 'success' || needs.Build.result == 'skipped') && (needs.BuildPP.result == 'success' || needs.BuildPP.result == 'skipped') && needs.Initialization.outputs.deliveryTargetsJson != '[]'
-    strategy:
-      matrix:
-        deliveryTarget: ${{ fromJson(needs.Initialization.outputs.deliveryTargetsJson) }}
-      fail-fast: false
-    runs-on: [ windows-latest ]
-    name: Deliver to ${{ matrix.deliveryTarget }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+  needs: [ Initialization, Build2, Build1, Build, BuildPP ]
+  if: (!cancelled()) && (needs.Build2.result == 'success' || needs.Build2.result == 'skipped') && (needs.Build1.result == 'success' || needs.Build1.result == 'skipped') && (needs.Build.result == 'success' || needs.Build.result == 'skipped') && (needs.BuildPP.result == 'success' || needs.BuildPP.result == 'skipped') && needs.Initialization.outputs.deliveryTargetsJson != '[]'
+  strategy:
+    matrix:
+      deliveryTarget: ${{ fromJson(needs.Initialization.outputs.deliveryTargetsJson) }}
+    fail-fast: false
+  runs-on: [ windows-latest ]
+  name: Deliver to ${{ matrix.deliveryTarget }}
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v4
 
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: '.artifacts'
+    - name: Download artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: '.artifacts'
 
-      - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@PPP
-        with:
-          shell: powershell
+    - name: Read settings
+      uses: freddydk/AL-Go/Actions/ReadSettings@PPP
+      with:
+        shell: powershell
 
-      - name: Read secrets
-        id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@PPP
-        with:
-          shell: powershell
-          gitHubSecrets: ${{ toJson(secrets) }}
-          getSecrets: '${{ matrix.deliveryTarget }}Context'
+    - name: Read secrets
+      id: ReadSecrets
+      uses: freddydk/AL-Go/Actions/ReadSecrets@PPP
+      with:
+        shell: powershell
+        gitHubSecrets: ${{ toJson(secrets) }}
+        getSecrets: '${{ matrix.deliveryTarget }}Context'
 
-      - name: Deliver
-        uses: freddydk/AL-Go/Actions/Deliver@PPP
-        env:
-          Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
-        with:
-          shell: powershell
-          type: 'CD'
-          projects: ${{ needs.Initialization.outputs.projects }}
-          deliveryTarget: ${{ matrix.deliveryTarget }}
-          artifacts: '.artifacts'
+    - name: Deliver
+      uses: freddydk/AL-Go/Actions/Deliver@PPP
+      env:
+        Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
+      with:
+        shell: powershell
+        type: 'CD'
+        projects: ${{ needs.Initialization.outputs.projects }}
+        deliveryTarget: ${{ matrix.deliveryTarget }}
+        artifacts: '.artifacts'
 
   PostProcess:
     needs: [ Initialization, Build, BuildPP, Deploy, Deliver, DeployALDoc ]
