@@ -30,7 +30,8 @@
     "runs-on": [
       "ubuntu-latest"
     ],
-    "shell": "pwsh"
+    "shell": "pwsh",
+    "myproperty": "test"
   },
   "DeliverToStorage": {
     "CreateContainerIfNotExist": true
