@@ -25,6 +25,7 @@
       "test"
     ]
   },
+  "generateDependencyArtifact": true,
   "DeployToTest": {
     "EnvironmentType": "Test",
     "runs-on": [
