@@ -1,6 +1,6 @@
 {
   "type": "PTE",
-  "templateUrl": "https://github.com/freddydk/AL-Go@issue1110",
+  "templateUrl": "https://github.com/freddydk/AL-Go@nuget",
   "CICDPushBranches": [
     "main",
     "release/*",
@@ -37,7 +37,7 @@
   "DeliverToStorage": {
     "CreateContainerIfNotExist": true
   },
-  "templateSha": "c9e9cc363a4079418ff3a0081664ad77125afa87",
+  "templateSha": "ae2e83b08395b6cd45c8795263b9595531a82af9",
   "RepoVersion": "1.0",
   "artifact": "//24.0//first",
   "vsixFile": "latest",
