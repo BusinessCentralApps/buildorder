@@ -13,7 +13,7 @@
   ],
   "useProjectDependencies": true,
   "useCompilerFolder": false,
-  "doNotPublishApps": false,
+  "doNotPublishApps": true,
   "runs-on": "windows-latest",
   "shell": "powershell",
   "gitHubRunner": "windows-latest",
