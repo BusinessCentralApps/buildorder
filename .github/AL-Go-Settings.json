@@ -12,7 +12,7 @@
     "development"
   ],
   "useProjectDependencies": true,
-  "useCompilerFolder": false,
+  "useCompilerFolder": true,
   "doNotPublishApps": true,
   "runs-on": "windows-latest",
   "shell": "powershell",
