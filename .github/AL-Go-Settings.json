@@ -46,11 +46,11 @@
   ],
   "customALGoSystemFiles": [
     {
-      "Destionation": ".AL-Go/",
+      "Destination": ".AL-Go/",
       "Source": "https://raw.githubusercontent.com/freddydk/CustomALGoSystemFiles/main/.AL-Go/myDevEnv.ps1"
     },
     {
-      "Destionation": ".AL-Go/FakeNewBcContainer.ps1",
+      "Destination": ".AL-Go/FakeNewBcContainer.ps1",
       "Source": "https://raw.githubusercontent.com/microsoft/BCApps/main/build/scripts/NewBcContainer.ps1"
     },
     {
