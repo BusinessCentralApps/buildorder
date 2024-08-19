@@ -37,7 +37,7 @@
   "DeliverToStorage": {
     "CreateContainerIfNotExist": true
   },
-  "templateSha": "48cd019e893f005ab7eccc3f43b87c6ebadb2733",
+  "templateSha": "7646df4481f469470030a04941160ca3c7bd7ff5",
   "RepoVersion": "1.0",
   "artifact": "//24.0//first",
   "vsixFile": "latest",
