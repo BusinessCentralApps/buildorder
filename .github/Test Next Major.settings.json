@@ -1,6 +1,5 @@
 {
     "artifact":  "////nextmajor/{INSIDERSASTOKEN}",
     "cacheImageName":  "",
-    "versioningStrategy":  15,
-    "githubRunner": "windows-latest"
+    "versioningStrategy":  15
 }
