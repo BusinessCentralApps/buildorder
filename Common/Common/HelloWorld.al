@@ -7,5 +7,6 @@ pageextension 50000 CustomerListExtCommon extends "Customer List"
     trigger OnOpenPage();
     begin
         // Message('App published: Hello world!!!');
+Syntax error
     end;
 }
