@@ -103,6 +103,13 @@ jobs:
           lfs: true
           submodules: recursive
 
+      - name: Read settings
+        uses: freddydk/AL-Go/Actions/ReadSettings@partial
+        with:
+          shell: ${{ inputs.shell }}
+          project: ${{ inputs.project }}
+          get: useCompilerFolder,keyVaultCodesignCertificateName,doNotSignApps,doNotRunTests,artifact,generateDependencyArtifact,trustedSigning
+
       - name: Determine Skip Project
         id: DetermineSkipProject
         uses: freddydk/AL-Go/Actions/DetermineSkipProject@partial
@@ -111,13 +118,6 @@ jobs:
           skippedProjectsJson: ${{ inputs.skippedProjectsJson }}
           project: ${{ inputs.project }}
           baselineWorkflowRunId: ${{ inputs.baselineWorkflowRunId }}
-
-      - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@partial
-        with:
-          shell: ${{ inputs.shell }}
-          project: ${{ inputs.project }}
-          get: useCompilerFolder,keyVaultCodesignCertificateName,doNotSignApps,doNotRunTests,artifact,generateDependencyArtifact,trustedSigning
 
       - name: Read secrets
         id: ReadSecrets
