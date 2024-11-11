@@ -19,7 +19,7 @@
   "gitHubRunner": "ubuntu-latest",
   "githubRunnerShell": "pwsh",
   "generateDependencyArtifact": true,
-  "templateSha": "ce1abbb991af840c6c52af255ca68f1bb7f37277",
+  "templateSha": "dc3ebc4b5661a8f8bf85dcd4d68d56d52249a954",
   "RepoVersion": "1.0",
   "artifact": "//24.0//first"
 }
