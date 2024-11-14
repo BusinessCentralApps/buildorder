@@ -21,6 +21,5 @@
   "githubRunnerShell": "pwsh",
   "generateDependencyArtifact": true,
   "templateSha": "e6969a61fc2a49d277eab3cbcf24eeb4b819ed3c",
-  "RepoVersion": "1.0",
-  "artifact": "//24.0//first"
+  "RepoVersion": "1.0"
 }
