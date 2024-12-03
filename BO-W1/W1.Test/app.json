@@ -22,6 +22,12 @@
       "publisher": "Microsoft",
       "name": "Any",
       "version": "22.0.0.0"
+    },
+    {
+      "id": "8f85d54c-ab9e-471e-bcb9-e666f1e48db5",
+      "name": "Common.Test",
+      "publisher": "Freddy",
+      "version": "1.0.0.0"
     }
   ],
   "screenshots": [],
