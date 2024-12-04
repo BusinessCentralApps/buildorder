@@ -14,12 +14,11 @@
   "useProjectDependencies": true,
   "useCompilerFolder": true,
   "doNotPublishApps": true,
-  "doNotBuildTests": true,
   "runs-on": "ubuntu-latest",
   "shell": "pwsh",
   "gitHubRunner": "ubuntu-latest",
   "githubRunnerShell": "pwsh",
   "generateDependencyArtifact": true,
-  "templateSha": "e6969a61fc2a49d277eab3cbcf24eeb4b819ed3c",
+  "templateSha": "eb7d4837235247d506a7a94869a5b479e4524b88",
   "RepoVersion": "1.0"
 }
