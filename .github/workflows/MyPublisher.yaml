@@ -8,12 +8,12 @@ jobs:
     runs-on: [ ubuntu-latest ]
     steps:
       - name: Trigger another workflow
-        uses: octokit/request-action@v2.4.0
+        uses: octokit/request-action@v2.x
         with:
           route: POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches
           owner: ${{ github.repository_owner }}
           repo: ${{ github.event.repository.name }}
-          workflow_id: PublishToEnvironment
+          workflow_id: PublishToEnvironment.yaml
           ref: main
           inputs: '{"appVersion":"Current", "environmentName": "PROD"}'
         env:
