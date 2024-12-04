@@ -2,6 +2,8 @@ name: 'MyPublisher'
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '0 20 * * *'
 
 jobs:
   Initialization:
