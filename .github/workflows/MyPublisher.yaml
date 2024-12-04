@@ -8,7 +8,7 @@ jobs:
     runs-on: [ ubuntu-latest ]
     steps:
       - name: Trigger another workflow
-        uses: octokit/request-action@v3
+        uses: octokit/request-action@v2
         with:
           route: POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches
           owner: ${{ github.repository_owner }}
