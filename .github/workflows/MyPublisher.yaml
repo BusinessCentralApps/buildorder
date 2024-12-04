@@ -1,0 +1,20 @@
+name: 'MyPublisher'
+
+on:
+  workflow_dispatch:
+
+jobs:
+  Initialization:
+    runs-on: [ ubuntu-latest ]
+    steps:
+      - name: Trigger another workflow
+        uses: octokit/request-action@v3
+        with:
+          route: POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches
+          owner: ${{ github.repository_owner }}
+          repo: ${{ github.event.repository.name }}
+          workflow_id: PublishToEnvironment.yaml
+          ref: main
+          inputs: '{"appVersion":"Current", "environmentName": "PROD"}'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GHTOKENWORKFLOW }}
