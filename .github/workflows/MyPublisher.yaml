@@ -5,11 +5,15 @@ on:
   schedule:
     - cron: '0 20 * * *'
 
+env:
+  appVersion: 'Current'
+  environmentName: 'PROD'
+
 jobs:
   Initialization:
     runs-on: [ ubuntu-latest ]
     steps:
-      - name: Trigger another workflow
+      - name: Trigger Publish To Environment
         uses: octokit/request-action@v2.x
         with:
           route: POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches
@@ -17,6 +21,6 @@ jobs:
           repo: ${{ github.event.repository.name }}
           workflow_id: PublishToEnvironment.yaml
           ref: main
-          inputs: '{"appVersion":"Current", "environmentName": "PROD"}'
+          inputs: '{"appVersion": ${{ env.appVersion }}, "environmentName": ${{ env.environmentName}} }'
         env:
           GITHUB_TOKEN: ${{ secrets.GHTOKENWORKFLOW }}
