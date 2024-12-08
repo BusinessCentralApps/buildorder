@@ -9,10 +9,6 @@ on:
       - '!.github/workflows/CICD.yaml'
     branches: [ 'main', 'release/*', 'feature/*', 'development' ]
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref_name }}
-  cancel-in-progress: true
-
 defaults:
   run:
     shell: pwsh
@@ -43,16 +39,13 @@ jobs:
       githubRunner: ${{ steps.ReadSettings.outputs.GitHubRunnerJson }}
       githubRunnerShell: ${{ steps.ReadSettings.outputs.GitHubRunnerShell }}
       projects: ${{ steps.determineProjectsToBuild.outputs.ProjectsJson }}
-      skippedProjects: ${{ steps.determineProjectsToBuild.outputs.SkippedProjectsJson }}
       projectDependenciesJson: ${{ steps.determineProjectsToBuild.outputs.ProjectDependenciesJson }}
       buildOrderJson: ${{ steps.determineProjectsToBuild.outputs.BuildOrderJson }}
-      baselineWorkflowRunId: ${{ steps.determineProjectsToBuild.outputs.BaselineWorkflowRunId }}
-      baselineWorkflowSHA: ${{ steps.determineProjectsToBuild.outputs.BaselineWorkflowSHA }}
-      workflowDepth: ${{ steps.DetermineWorkflowDepth.outputs.WorkflowDepth }}
       powerPlatformSolutionFolder: ${{ steps.DeterminePowerPlatformSolutionFolder.outputs.powerPlatformSolutionFolder }}
+      workflowDepth: ${{ steps.DetermineWorkflowDepth.outputs.WorkflowDepth }}
     steps:
       - name: Dump Workflow Information
-        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@partial
+        uses: microsoft/AL-Go/Actions/DumpWorkflowInfo@9dbee17f636ca9ba2649b45adc2b65f4fd66af84
         with:
           shell: pwsh
 
@@ -64,13 +57,13 @@ jobs:
 
       - name: Initialize the workflow
         id: init
-        uses: freddydk/AL-Go/Actions/WorkflowInitialize@partial
+        uses: microsoft/AL-Go/Actions/WorkflowInitialize@9dbee17f636ca9ba2649b45adc2b65f4fd66af84
         with:
           shell: pwsh
 
       - name: Read settings
         id: ReadSettings
-        uses: freddydk/AL-Go/Actions/ReadSettings@partial
+        uses: microsoft/AL-Go/Actions/ReadSettings@9dbee17f636ca9ba2649b45adc2b65f4fd66af84
         with:
           shell: pwsh
           get: type, powerPlatformSolutionFolder
@@ -82,11 +75,10 @@ jobs:
 
       - name: Determine Projects To Build
         id: determineProjectsToBuild
-        uses: freddydk/AL-Go/Actions/DetermineProjectsToBuild@partial
+        uses: microsoft/AL-Go/Actions/DetermineProjectsToBuild@9dbee17f636ca9ba2649b45adc2b65f4fd66af84
         with:
           shell: pwsh
           maxBuildDepth: ${{ env.workflowDepth }}
-          publishSkippedProjectArtifacts: 'true'
 
       - name: Determine PowerPlatform Solution Folder
         id: DeterminePowerPlatformSolutionFolder
@@ -96,7 +88,7 @@ jobs:
 
       - name: Determine Delivery Target Secrets
         id: DetermineDeliveryTargetSecrets
-        uses: freddydk/AL-Go/Actions/DetermineDeliveryTargets@partial
+        uses: microsoft/AL-Go/Actions/DetermineDeliveryTargets@9dbee17f636ca9ba2649b45adc2b65f4fd66af84
         with:
           shell: pwsh
           projectsJson: '${{ steps.determineProjectsToBuild.outputs.ProjectsJson }}'
@@ -104,7 +96,7 @@ jobs:
 
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@partial
+        uses: microsoft/AL-Go/Actions/ReadSecrets@9dbee17f636ca9ba2649b45adc2b65f4fd66af84
         with:
           shell: pwsh
           gitHubSecrets: ${{ toJson(secrets) }}
@@ -112,7 +104,7 @@ jobs:
 
       - name: Determine Delivery Targets
         id: DetermineDeliveryTargets
-        uses: freddydk/AL-Go/Actions/DetermineDeliveryTargets@partial
+        uses: microsoft/AL-Go/Actions/DetermineDeliveryTargets@9dbee17f636ca9ba2649b45adc2b65f4fd66af84
         env:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
         with:
@@ -122,7 +114,7 @@ jobs:
 
       - name: Determine Deployment Environments
         id: DetermineDeploymentEnvironments
-        uses: freddydk/AL-Go/Actions/DetermineDeploymentEnvironments@partial
+        uses: microsoft/AL-Go/Actions/DetermineDeploymentEnvironments@9dbee17f636ca9ba2649b45adc2b65f4fd66af84
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
@@ -138,13 +130,13 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@partial
+        uses: microsoft/AL-Go/Actions/ReadSettings@9dbee17f636ca9ba2649b45adc2b65f4fd66af84
         with:
           shell: pwsh
           get: templateUrl
 
       - name: Check for updates to AL-Go system files
-        uses: freddydk/AL-Go/Actions/CheckForUpdates@partial
+        uses: microsoft/AL-Go/Actions/CheckForUpdates@9dbee17f636ca9ba2649b45adc2b65f4fd66af84
         with:
           shell: pwsh
           templateUrl: ${{ env.templateUrl }}
@@ -166,10 +158,7 @@ jobs:
       project: ${{ matrix.project }}
       projectName: ${{ matrix.projectName }}
       buildMode: ${{ matrix.buildMode }}
-      skippedProjectsJson: ${{ needs.Initialization.outputs.skippedProjects }}
       projectDependenciesJson: ${{ needs.Initialization.outputs.projectDependenciesJson }}
-      baselineWorkflowRunId: ${{ needs.Initialization.outputs.baselineWorkflowRunId }}
-      baselineWorkflowSHA: ${{ needs.Initialization.outputs.baselineWorkflowSHA }}
       secrets: 'licenseFileUrl,codeSignCertificateUrl,*codeSignCertificatePassword,keyVaultCertificateUrl,*keyVaultCertificatePassword,keyVaultClientId,gitHubPackagesContext,applicationInsightsConnectionString'
       publishThisBuildArtifacts: ${{ needs.Initialization.outputs.workflowDepth > 1 }}
       publishArtifacts: ${{ github.ref_name == 'main' || startswith(github.ref_name, 'release/') || startswith(github.ref_name, 'releases/') || needs.Initialization.outputs.deliveryTargetsJson != '[]' || needs.Initialization.outputs.environmentCount > 0 }}
@@ -192,10 +181,7 @@ jobs:
       project: ${{ matrix.project }}
       projectName: ${{ matrix.projectName }}
       buildMode: ${{ matrix.buildMode }}
-      skippedProjectsJson: ${{ needs.Initialization.outputs.skippedProjects }}
       projectDependenciesJson: ${{ needs.Initialization.outputs.projectDependenciesJson }}
-      baselineWorkflowRunId: ${{ needs.Initialization.outputs.baselineWorkflowRunId }}
-      baselineWorkflowSHA: ${{ needs.Initialization.outputs.baselineWorkflowSHA }}
       secrets: 'licenseFileUrl,codeSignCertificateUrl,*codeSignCertificatePassword,keyVaultCertificateUrl,*keyVaultCertificatePassword,keyVaultClientId,gitHubPackagesContext,applicationInsightsConnectionString'
       publishThisBuildArtifacts: ${{ needs.Initialization.outputs.workflowDepth > 1 }}
       publishArtifacts: ${{ github.ref_name == 'main' || startswith(github.ref_name, 'release/') || startswith(github.ref_name, 'releases/') || needs.Initialization.outputs.deliveryTargetsJson != '[]' || needs.Initialization.outputs.environmentCount > 0 }}
@@ -218,10 +204,7 @@ jobs:
       project: ${{ matrix.project }}
       projectName: ${{ matrix.projectName }}
       buildMode: ${{ matrix.buildMode }}
-      skippedProjectsJson: ${{ needs.Initialization.outputs.skippedProjects }}
       projectDependenciesJson: ${{ needs.Initialization.outputs.projectDependenciesJson }}
-      baselineWorkflowRunId: ${{ needs.Initialization.outputs.baselineWorkflowRunId }}
-      baselineWorkflowSHA: ${{ needs.Initialization.outputs.baselineWorkflowSHA }}
       secrets: 'licenseFileUrl,codeSignCertificateUrl,*codeSignCertificatePassword,keyVaultCertificateUrl,*keyVaultCertificatePassword,keyVaultClientId,gitHubPackagesContext,applicationInsightsConnectionString'
       publishThisBuildArtifacts: ${{ needs.Initialization.outputs.workflowDepth > 1 }}
       publishArtifacts: ${{ github.ref_name == 'main' || startswith(github.ref_name, 'release/') || startswith(github.ref_name, 'releases/') || needs.Initialization.outputs.deliveryTargetsJson != '[]' || needs.Initialization.outputs.environmentCount > 0 }}
@@ -251,7 +234,7 @@ jobs:
           path: '.artifacts'
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@partial
+        uses: microsoft/AL-Go/Actions/ReadSettings@9dbee17f636ca9ba2649b45adc2b65f4fd66af84
         with:
           shell: pwsh
 
@@ -260,7 +243,7 @@ jobs:
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0
 
       - name: Build Reference Documentation
-        uses: freddydk/AL-Go/Actions/BuildReferenceDocumentation@partial
+        uses: microsoft/AL-Go/Actions/BuildReferenceDocumentation@9dbee17f636ca9ba2649b45adc2b65f4fd66af84
         with:
           shell: pwsh
           artifacts: '.artifacts'
@@ -297,7 +280,7 @@ jobs:
           path: '.artifacts'
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@partial
+        uses: microsoft/AL-Go/Actions/ReadSettings@9dbee17f636ca9ba2649b45adc2b65f4fd66af84
         with:
           shell: ${{ matrix.shell }}
           get: type,powerPlatformSolutionFolder
@@ -311,7 +294,7 @@ jobs:
 
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@partial
+        uses: microsoft/AL-Go/Actions/ReadSecrets@9dbee17f636ca9ba2649b45adc2b65f4fd66af84
         with:
           shell: ${{ matrix.shell }}
           gitHubSecrets: ${{ toJson(secrets) }}
@@ -319,7 +302,7 @@ jobs:
 
       - name: Deploy to Business Central
         id: Deploy
-        uses: freddydk/AL-Go/Actions/Deploy@partial
+        uses: microsoft/AL-Go/Actions/Deploy@9dbee17f636ca9ba2649b45adc2b65f4fd66af84
         env:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
         with:
@@ -331,7 +314,7 @@ jobs:
 
       - name: Deploy to Power Platform
         if: env.type == 'PTE' && env.powerPlatformSolutionFolder != ''
-        uses: freddydk/AL-Go/Actions/DeployPowerPlatform@partial
+        uses: microsoft/AL-Go/Actions/DeployPowerPlatform@9dbee17f636ca9ba2649b45adc2b65f4fd66af84
         env:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
         with:
@@ -359,20 +342,20 @@ jobs:
           path: '.artifacts'
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@partial
+        uses: microsoft/AL-Go/Actions/ReadSettings@9dbee17f636ca9ba2649b45adc2b65f4fd66af84
         with:
           shell: pwsh
 
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@partial
+        uses: microsoft/AL-Go/Actions/ReadSecrets@9dbee17f636ca9ba2649b45adc2b65f4fd66af84
         with:
           shell: pwsh
           gitHubSecrets: ${{ toJson(secrets) }}
           getSecrets: '${{ matrix.deliveryTarget }}Context'
 
       - name: Deliver
-        uses: freddydk/AL-Go/Actions/Deliver@partial
+        uses: microsoft/AL-Go/Actions/Deliver@9dbee17f636ca9ba2649b45adc2b65f4fd66af84
         env:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
         with:
@@ -392,7 +375,7 @@ jobs:
 
       - name: Finalize the workflow
         id: PostProcess
-        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@partial
+        uses: microsoft/AL-Go/Actions/WorkflowPostProcess@9dbee17f636ca9ba2649b45adc2b65f4fd66af84
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:

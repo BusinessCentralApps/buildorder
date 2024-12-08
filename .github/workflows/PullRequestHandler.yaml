@@ -28,7 +28,7 @@ jobs:
     if: (github.event.pull_request.base.repo.full_name != github.event.pull_request.head.repo.full_name) && (github.event_name != 'pull_request')
     runs-on: windows-latest
     steps:
-      - uses: freddydk/AL-Go/Actions/VerifyPRChanges@partial
+      - uses: microsoft/AL-Go/Actions/VerifyPRChanges@9dbee17f636ca9ba2649b45adc2b65f4fd66af84
 
   Initialization:
     needs: [ PregateCheck ]
@@ -39,12 +39,11 @@ jobs:
       projectDependenciesJson: ${{ steps.determineProjectsToBuild.outputs.ProjectDependenciesJson }}
       buildOrderJson: ${{ steps.determineProjectsToBuild.outputs.BuildOrderJson }}
       baselineWorkflowRunId: ${{ steps.determineProjectsToBuild.outputs.BaselineWorkflowRunId }}
-      baselineWorkflowSHA: ${{ steps.determineProjectsToBuild.outputs.BaselineWorkflowSHA }}
       workflowDepth: ${{ steps.DetermineWorkflowDepth.outputs.WorkflowDepth }}
       telemetryScopeJson: ${{ steps.init.outputs.telemetryScopeJson }}
     steps:
       - name: Dump Workflow Information
-        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@partial
+        uses: microsoft/AL-Go/Actions/DumpWorkflowInfo@9dbee17f636ca9ba2649b45adc2b65f4fd66af84
         with:
           shell: pwsh
 
@@ -56,13 +55,13 @@ jobs:
 
       - name: Initialize the workflow
         id: init
-        uses: freddydk/AL-Go/Actions/WorkflowInitialize@partial
+        uses: microsoft/AL-Go/Actions/WorkflowInitialize@9dbee17f636ca9ba2649b45adc2b65f4fd66af84
         with:
           shell: pwsh
 
       - name: Read settings
         id: ReadSettings
-        uses: freddydk/AL-Go/Actions/ReadSettings@partial
+        uses: microsoft/AL-Go/Actions/ReadSettings@9dbee17f636ca9ba2649b45adc2b65f4fd66af84
         with:
           shell: pwsh
 
@@ -73,7 +72,7 @@ jobs:
 
       - name: Determine Projects To Build
         id: determineProjectsToBuild
-        uses: freddydk/AL-Go/Actions/DetermineProjectsToBuild@partial
+        uses: microsoft/AL-Go/Actions/DetermineProjectsToBuild@9dbee17f636ca9ba2649b45adc2b65f4fd66af84
         with:
           shell: pwsh
           maxBuildDepth: ${{ env.workflowDepth }}
@@ -97,11 +96,9 @@ jobs:
       buildMode: ${{ matrix.buildMode }}
       projectDependenciesJson: ${{ needs.Initialization.outputs.projectDependenciesJson }}
       baselineWorkflowRunId: ${{ needs.Initialization.outputs.baselineWorkflowRunId }}
-      baselineWorkflowSHA: ${{ needs.Initialization.outputs.baselineWorkflowSHA }}
       secrets: 'licenseFileUrl,keyVaultCertificateUrl,*keyVaultCertificatePassword,keyVaultClientId,gitHubPackagesContext,applicationInsightsConnectionString'
       publishThisBuildArtifacts: ${{ needs.Initialization.outputs.workflowDepth > 1 }}
       artifactsNameSuffix: 'PR${{ github.event.number }}'
-      useArtifactCache: true
 
   Build2:
     needs: [ Initialization, Build1 ]
@@ -122,11 +119,9 @@ jobs:
       buildMode: ${{ matrix.buildMode }}
       projectDependenciesJson: ${{ needs.Initialization.outputs.projectDependenciesJson }}
       baselineWorkflowRunId: ${{ needs.Initialization.outputs.baselineWorkflowRunId }}
-      baselineWorkflowSHA: ${{ needs.Initialization.outputs.baselineWorkflowSHA }}
       secrets: 'licenseFileUrl,keyVaultCertificateUrl,*keyVaultCertificatePassword,keyVaultClientId,gitHubPackagesContext,applicationInsightsConnectionString'
       publishThisBuildArtifacts: ${{ needs.Initialization.outputs.workflowDepth > 1 }}
       artifactsNameSuffix: 'PR${{ github.event.number }}'
-      useArtifactCache: true
 
   Build:
     needs: [ Initialization, Build2, Build1 ]
@@ -147,11 +142,9 @@ jobs:
       buildMode: ${{ matrix.buildMode }}
       projectDependenciesJson: ${{ needs.Initialization.outputs.projectDependenciesJson }}
       baselineWorkflowRunId: ${{ needs.Initialization.outputs.baselineWorkflowRunId }}
-      baselineWorkflowSHA: ${{ needs.Initialization.outputs.baselineWorkflowSHA }}
       secrets: 'licenseFileUrl,keyVaultCertificateUrl,*keyVaultCertificatePassword,keyVaultClientId,gitHubPackagesContext,applicationInsightsConnectionString'
       publishThisBuildArtifacts: ${{ needs.Initialization.outputs.workflowDepth > 1 }}
       artifactsNameSuffix: 'PR${{ github.event.number }}'
-      useArtifactCache: true
 
   StatusCheck:
     needs: [ Initialization, Build ]
@@ -161,7 +154,7 @@ jobs:
     steps:
       - name: Pull Request Status Check
         id: PullRequestStatusCheck
-        uses: freddydk/AL-Go/Actions/PullRequestStatusCheck@partial
+        uses: microsoft/AL-Go/Actions/PullRequestStatusCheck@9dbee17f636ca9ba2649b45adc2b65f4fd66af84
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
@@ -169,7 +162,7 @@ jobs:
 
       - name: Finalize the workflow
         id: PostProcess
-        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@partial
+        uses: microsoft/AL-Go/Actions/WorkflowPostProcess@9dbee17f636ca9ba2649b45adc2b65f4fd66af84
         if: success() || failure()
         env:
           GITHUB_TOKEN: ${{ github.token }}
