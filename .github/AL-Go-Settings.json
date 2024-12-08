@@ -16,7 +16,7 @@
   "doNotPublishApps": false,
   "runs-on": "ubuntu-latest",
   "shell": "pwsh",
-  "gitHubRunner": "ubuntu-latest",
+  "gitHubRunner": "windows-latest",
   "githubRunnerShell": "pwsh",
   "generateDependencyArtifact": true,
   "templateSha": "eb7d4837235247d506a7a94869a5b479e4524b88",
