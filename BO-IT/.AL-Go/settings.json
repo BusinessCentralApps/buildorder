@@ -1,5 +1,6 @@
 {
   "country": "it",
+  "additionalCountries": [ "de" ],
   "appFolders": [],
   "testFolders": [],
   "repoVersion": "3.3",
