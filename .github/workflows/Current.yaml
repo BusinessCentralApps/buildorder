@@ -29,7 +29,7 @@ jobs:
       telemetryScopeJson: ${{ steps.init.outputs.telemetryScopeJson }}
     steps:
       - name: Dump Workflow Information
-        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@issue1338
+        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@partial
         with:
           shell: pwsh
 
@@ -37,36 +37,19 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           lfs: true
+          submodules: recursive
 
       - name: Initialize the workflow
         id: init
-        uses: freddydk/AL-Go/Actions/WorkflowInitialize@issue1338
+        uses: freddydk/AL-Go/Actions/WorkflowInitialize@partial
         with:
           shell: pwsh
 
       - name: Read settings
         id: ReadSettings
-        uses: freddydk/AL-Go/Actions/ReadSettings@issue1338
+        uses: freddydk/AL-Go/Actions/ReadSettings@partial
         with:
           shell: pwsh
-          get: useGitSubmodules
-
-      - name: Read submodules token
-        id: ReadSubmodulesToken
-        if: env.useGitSubmodules != 'false' && env.useGitSubmodules != ''
-        uses: freddydk/AL-Go/Actions/ReadSecrets@issue1338
-        with:
-          shell: pwsh
-          gitHubSecrets: ${{ toJson(secrets) }}
-          getSecrets: '-gitSubmodulesToken'
-
-      - name: Checkout Submodules
-        if: env.useGitSubmodules != 'false' && env.useGitSubmodules != ''
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-        with:
-          lfs: true
-          submodules: ${{ env.useGitSubmodules }}
-          token: '${{ fromJson(steps.ReadSubmodulesToken.outputs.Secrets).gitSubmodulesToken }}'
 
       - name: Determine Workflow Depth
         id: DetermineWorkflowDepth
@@ -75,7 +58,7 @@ jobs:
 
       - name: Determine Projects To Build
         id: determineProjectsToBuild
-        uses: freddydk/AL-Go/Actions/DetermineProjectsToBuild@issue1338
+        uses: freddydk/AL-Go/Actions/DetermineProjectsToBuild@partial
         with:
           shell: pwsh
           maxBuildDepth: ${{ env.workflowDepth }}
@@ -153,7 +136,7 @@ jobs:
 
       - name: Finalize the workflow
         id: PostProcess
-        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@issue1338
+        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@partial
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
