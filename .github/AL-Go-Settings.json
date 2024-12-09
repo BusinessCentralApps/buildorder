@@ -13,7 +13,7 @@
   ],
   "useProjectDependencies": true,
   "useCompilerFolder": true,
-  "doNotPublishApps": true,
+  "doNotPublishApps": false,
   "runs-on": "ubuntu-latest",
   "shell": "pwsh",
   "gitHubRunner": "windows-latest",
