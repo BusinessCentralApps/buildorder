@@ -55,8 +55,7 @@ permissions:
   id-token: write
   pull-requests: write
 
-concurrency:
-  group: ${{ github.workflow }}
+concurrency: release
 
 defaults:
   run:

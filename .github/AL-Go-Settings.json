@@ -19,6 +19,6 @@
   "gitHubRunner": "windows-latest",
   "githubRunnerShell": "pwsh",
   "generateDependencyArtifact": true,
-  "templateSha": "f85460e3c1e06f89ef4faf2ee1c6f0fd2e790314",
+  "templateSha": "e8658c48f7effcab83f8f27f899540624ddba330",
   "RepoVersion": "1.0"
 }
