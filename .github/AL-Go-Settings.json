@@ -11,6 +11,7 @@
     "main",
     "development"
   ],
+  "buildModes": [ "Default", "MyMode", "MyClean" ],
   "useProjectDependencies": true,
   "useCompilerFolder": true,
   "doNotPublishApps": true,
