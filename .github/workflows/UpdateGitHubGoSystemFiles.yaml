@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       templateUrl:
-        description: Template Repository URL (current is https://github.com/freddydk/AL-Go@partial)
+        description: Template Repository URL (current is https://github.com/freddydk/AL-Go@thisbuild)
         required: false
         default: ''
       downloadLatest:
@@ -36,7 +36,7 @@ jobs:
     runs-on: [ ubuntu-latest ]
     steps:
       - name: Dump Workflow Information
-        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@partial
+        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@thisbuild
         with:
           shell: pwsh
 
@@ -45,19 +45,19 @@ jobs:
 
       - name: Initialize the workflow
         id: init
-        uses: freddydk/AL-Go/Actions/WorkflowInitialize@partial
+        uses: freddydk/AL-Go/Actions/WorkflowInitialize@thisbuild
         with:
           shell: pwsh
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@partial
+        uses: freddydk/AL-Go/Actions/ReadSettings@thisbuild
         with:
           shell: pwsh
           get: templateUrl
 
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@partial
+        uses: freddydk/AL-Go/Actions/ReadSecrets@thisbuild
         with:
           shell: pwsh
           gitHubSecrets: ${{ toJson(secrets) }}
@@ -93,7 +93,7 @@ jobs:
           Add-Content -Encoding UTF8 -Path $env:GITHUB_ENV -Value "downloadLatest=$downloadLatest"
 
       - name: Update AL-Go system files
-        uses: freddydk/AL-Go/Actions/CheckForUpdates@partial
+        uses: freddydk/AL-Go/Actions/CheckForUpdates@thisbuild
         with:
           shell: pwsh
           token: ${{ fromJson(steps.ReadSecrets.outputs.Secrets).ghTokenWorkflow }}
@@ -104,7 +104,7 @@ jobs:
 
       - name: Finalize the workflow
         if: always()
-        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@partial
+        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@thisbuild
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:

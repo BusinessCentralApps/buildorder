@@ -26,10 +26,11 @@ jobs:
       projectDependenciesJson: ${{ steps.determineProjectsToBuild.outputs.ProjectDependenciesJson }}
       buildOrderJson: ${{ steps.determineProjectsToBuild.outputs.BuildOrderJson }}
       workflowDepth: ${{ steps.DetermineWorkflowDepth.outputs.WorkflowDepth }}
+      artifactsRetentionDays: ${{ steps.DetermineWorkflowDepth.outputs.ArtifactsRetentionDays }}
       telemetryScopeJson: ${{ steps.init.outputs.telemetryScopeJson }}
     steps:
       - name: Dump Workflow Information
-        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@partial
+        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@thisbuild
         with:
           shell: pwsh
 
@@ -40,13 +41,13 @@ jobs:
 
       - name: Initialize the workflow
         id: init
-        uses: freddydk/AL-Go/Actions/WorkflowInitialize@partial
+        uses: freddydk/AL-Go/Actions/WorkflowInitialize@thisbuild
         with:
           shell: pwsh
 
       - name: Read settings
         id: ReadSettings
-        uses: freddydk/AL-Go/Actions/ReadSettings@partial
+        uses: freddydk/AL-Go/Actions/ReadSettings@thisbuild
         with:
           shell: pwsh
           get: useGitSubmodules
@@ -54,7 +55,7 @@ jobs:
       - name: Read submodules token
         id: ReadSubmodulesToken
         if: env.useGitSubmodules != 'false' && env.useGitSubmodules != ''
-        uses: freddydk/AL-Go/Actions/ReadSecrets@partial
+        uses: freddydk/AL-Go/Actions/ReadSecrets@thisbuild
         with:
           shell: pwsh
           gitHubSecrets: ${{ toJson(secrets) }}
@@ -72,10 +73,11 @@ jobs:
         id: DetermineWorkflowDepth
         run: |
           Add-Content -Encoding UTF8 -Path $env:GITHUB_OUTPUT -Value "WorkflowDepth=$($env:workflowDepth)"
+          Add-Content -Encoding UTF8 -Path $env:GITHUB_OUTPUT -Value "ArtifactsRetentionDays=90"
 
       - name: Determine Projects To Build
         id: determineProjectsToBuild
-        uses: freddydk/AL-Go/Actions/DetermineProjectsToBuild@partial
+        uses: freddydk/AL-Go/Actions/DetermineProjectsToBuild@thisbuild
         with:
           shell: pwsh
           maxBuildDepth: ${{ env.workflowDepth }}
@@ -98,7 +100,7 @@ jobs:
       buildMode: ${{ matrix.buildMode }}
       projectDependenciesJson: ${{ needs.Initialization.outputs.projectDependenciesJson }}
       secrets: 'licenseFileUrl,codeSignCertificateUrl,*codeSignCertificatePassword,keyVaultCertificateUrl,*keyVaultCertificatePassword,keyVaultClientId,gitHubPackagesContext,applicationInsightsConnectionString'
-      publishThisBuildArtifacts: ${{ needs.Initialization.outputs.workflowDepth > 1 }}
+      artifactsRetentionDays: ${{ needs.Initialization.outputs.artifactsRetentionDays }}
       artifactsNameSuffix: 'NextMinor'
 
   Build2:
@@ -119,7 +121,7 @@ jobs:
       buildMode: ${{ matrix.buildMode }}
       projectDependenciesJson: ${{ needs.Initialization.outputs.projectDependenciesJson }}
       secrets: 'licenseFileUrl,codeSignCertificateUrl,*codeSignCertificatePassword,keyVaultCertificateUrl,*keyVaultCertificatePassword,keyVaultClientId,gitHubPackagesContext,applicationInsightsConnectionString'
-      publishThisBuildArtifacts: ${{ needs.Initialization.outputs.workflowDepth > 1 }}
+      artifactsRetentionDays: ${{ needs.Initialization.outputs.artifactsRetentionDays }}
       artifactsNameSuffix: 'NextMinor'
 
   Build:
@@ -140,7 +142,7 @@ jobs:
       buildMode: ${{ matrix.buildMode }}
       projectDependenciesJson: ${{ needs.Initialization.outputs.projectDependenciesJson }}
       secrets: 'licenseFileUrl,codeSignCertificateUrl,*codeSignCertificatePassword,keyVaultCertificateUrl,*keyVaultCertificatePassword,keyVaultClientId,gitHubPackagesContext,applicationInsightsConnectionString'
-      publishThisBuildArtifacts: ${{ needs.Initialization.outputs.workflowDepth > 1 }}
+      artifactsRetentionDays: ${{ needs.Initialization.outputs.artifactsRetentionDays }}
       artifactsNameSuffix: 'NextMinor'
 
   PostProcess:
@@ -153,7 +155,7 @@ jobs:
 
       - name: Finalize the workflow
         id: PostProcess
-        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@partial
+        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@thisbuild
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
