@@ -42,6 +42,9 @@
       }
     }
   ],
+  "PreprocessorSymbols": [
+    "DEFAULT"
+  ],
   "NextMajorModePreprocessorSymbols": [
     "NEXTMAJOR", "TEST"
   ],
