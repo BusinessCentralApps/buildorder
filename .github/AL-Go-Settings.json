@@ -11,24 +11,34 @@
     "main",
     "development"
   ],
-  "buildModes": [ "Default", "NextMajor", "NextMinor" ],
+  "buildModes": [
+    "Default",
+    "NextMajor",
+    "NextMinor"
+  ],
   "conditionalSettings": [
     {
-      "buildModes": ["Default"],
+      "buildModes": [
+        "Default"
+      ],
       "settings": {
         "artifact": "https://bcartifacts-exdbf9fwegejdqak.b02.azurefd.net/sandbox/24.0.16410.18040/w1"
       }
     },
     {
-      "buildModes": ["NextMajor"],
+      "buildModes": [
+        "NextMajor"
+      ],
       "settings": {
-        "artifact":  "///w1/nextmajor/"
+        "artifact": "///w1/nextmajor/"
       }
     },
     {
-      "buildModes": ["NextMinor"],
+      "buildModes": [
+        "NextMinor"
+      ],
       "settings": {
-        "artifact":  "///w1/nextminor/"
+        "artifact": "///w1/nextminor/"
       }
     }
   ],
@@ -46,6 +56,6 @@
   "gitHubRunner": "ubuntu-latest",
   "githubRunnerShell": "pwsh",
   "generateDependencyArtifact": true,
-  "templateSha": "1aa48b71790df45bff5cc4efedba6789beec02d7",
+  "templateSha": "43c5e23fcfcf540c4473432981ad94e655de566b",
   "RepoVersion": "1.0"
 }
