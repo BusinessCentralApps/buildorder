@@ -43,10 +43,10 @@
     }
   ],
   "NextMajorModePreprocessorSymbols": [
-    "NEXTMAJOR"
+    "NEXTMAJOR", "TEST"
   ],
   "NextMinorModePreprocessorSymbols": [
-    "NEXTMINOR"
+    "NEXTMINOR", "TEST"
   ],
   "useProjectDependencies": true,
   "useCompilerFolder": true,
