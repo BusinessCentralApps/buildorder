@@ -46,10 +46,12 @@
     "DEFAULT"
   ],
   "NextMajorModePreprocessorSymbols": [
-    "NEXTMAJOR", "TEST"
+    "NEXTMAJOR",
+    "TEST"
   ],
   "NextMinorModePreprocessorSymbols": [
-    "NEXTMINOR", "TEST"
+    "NEXTMINOR",
+    "TEST"
   ],
   "useProjectDependencies": true,
   "useCompilerFolder": true,
@@ -59,6 +61,6 @@
   "gitHubRunner": "ubuntu-latest",
   "githubRunnerShell": "pwsh",
   "generateDependencyArtifact": true,
-  "templateSha": "43c5e23fcfcf540c4473432981ad94e655de566b",
+  "templateSha": "929606de6bd04c39fa5d092f5007f5d3d2a5abf6",
   "RepoVersion": "1.0"
 }
