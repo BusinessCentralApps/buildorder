@@ -17,9 +17,6 @@
     "NextMajor",
     "NextMinor"
   ],
-  "cleanModePreprocessorSymbols": [
-    "CLEAN"
-  ],
   "conditionalSettings": [
     {
       "buildModes": [
@@ -31,10 +28,24 @@
     },
     {
       "buildModes": [
+        "Clean"
+      ],
+      "settings": {
+        "preprocessorSymbols": [
+          "CLEAN"
+        ]
+      }
+    },
+    {
+      "buildModes": [
         "NextMajor"
       ],
       "settings": {
-        "artifact": "///w1/nextmajor/"
+        "artifact": "///w1/nextmajor/",
+        "preprocessorSymbols": [
+          "NEXTMAJOR",
+          "TEST"
+        ]
       }
     },
     {
@@ -42,20 +53,16 @@
         "NextMinor"
       ],
       "settings": {
-        "artifact": "///w1/nextminor/"
+        "artifact": "///w1/nextminor/",
+        "preprocessorSymbols": [
+          "NEXTMAJOR",
+          "TEST"
+        ]
       }
     }
   ],
   "PreprocessorSymbols": [
-    "DEFAULT"
-  ],
-  "NextMajorModePreprocessorSymbols": [
-    "NEXTMAJOR",
-    "TEST"
-  ],
-  "NextMinorModePreprocessorSymbols": [
-    "NEXTMINOR",
-    "TEST"
+    "ALL"
   ],
   "useProjectDependencies": true,
   "useCompilerFolder": true,
