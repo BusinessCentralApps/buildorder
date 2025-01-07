@@ -13,9 +13,11 @@
   ],
   "buildModes": [
     "Default",
+    "Clean",
     "NextMajor",
     "NextMinor"
   ],
+  "cleanModePreprocessorSymbols": [ "CLEAN" ],
   "conditionalSettings": [
     {
       "buildModes": [
