@@ -17,7 +17,9 @@
     "NextMajor",
     "NextMinor"
   ],
-  "cleanModePreprocessorSymbols": [ "CLEAN" ],
+  "cleanModePreprocessorSymbols": [
+    "CLEAN"
+  ],
   "conditionalSettings": [
     {
       "buildModes": [
@@ -63,6 +65,6 @@
   "gitHubRunner": "ubuntu-latest",
   "githubRunnerShell": "pwsh",
   "generateDependencyArtifact": true,
-  "templateSha": "ae8924569db9c8ffd50cd9faed03bba9406891bb",
+  "templateSha": "0b7cfce3ebfa9ce82fd751f3b3477ad397c1e996",
   "RepoVersion": "1.0"
 }
