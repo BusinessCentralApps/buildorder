@@ -17,7 +17,6 @@
     "NextMajor",
     "NextMinor"
   ],
-  "cicdSchedule": "5 4 * * *",
   "conditionalSettings": [
     {
       "workflows": [
