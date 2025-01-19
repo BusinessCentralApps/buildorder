@@ -11,10 +11,6 @@
     "main",
     "development"
   ],
-  "workflowconcurrency": [
-    "group: ${{ github.workflow }}-${{ github.ref }}",
-    "cancel-in-progress: true"
-  ],
   "buildModes": [
     "Default",
     "Clean",
@@ -22,6 +18,17 @@
     "NextMinor"
   ],
   "conditionalSettings": [
+    {
+      "workflows": [
+        "CI/CD"
+      ],
+      "settings": {
+        "workflowconcurrency": [
+          "group: ${{ github.workflow }}-${{ github.ref }}",
+          "cancel-in-progress: true"
+        ],
+      }
+    },
     {
       "buildModes": [
         "Default"
