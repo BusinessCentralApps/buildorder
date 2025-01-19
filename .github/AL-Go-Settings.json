@@ -11,6 +11,10 @@
     "main",
     "development"
   ],
+  "concurrency": [
+    "group: ${{ github.workflow }}-${{ github.ref }}",
+    "cancel-in-progress: true"
+  ],
   "buildModes": [
     "Default",
     "Clean",
