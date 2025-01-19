@@ -26,7 +26,7 @@
         "workflowconcurrency": [
           "group: ${{ github.workflow }}-${{ github.ref }}",
           "cancel-in-progress: true"
-        ],
+        ]
       }
     },
     {
@@ -83,6 +83,6 @@
   "gitHubRunner": "ubuntu-latest",
   "githubRunnerShell": "pwsh",
   "generateDependencyArtifact": true,
-  "templateSha": "a068ef1fe8064ac54cfc2d5a2b994ecd6ab2dd0c",
+  "templateSha": "43b07700b6dac9243e85312cc3b0c555330fde67",
   "RepoVersion": "1.0"
 }
