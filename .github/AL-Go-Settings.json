@@ -20,7 +20,7 @@
   "conditionalSettings": [
     {
       "workflows": [
-        "CI/CD"
+        "CICD"
       ],
       "settings": {
         "workflowconcurrency": [
