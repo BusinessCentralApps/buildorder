@@ -28,9 +28,9 @@
           "group: ${{ github.workflow }}-${{ github.ref }}",
           "cancel-in-progress: true"
         ],
-        "workflowsxchedule": [
+        "workflowschedule": [
           "cron: '5 4 * * *'",
-          "cron: '6 6 * * *'"
+          "cron: '7 7 * * *'"
         ]
       }
     },
