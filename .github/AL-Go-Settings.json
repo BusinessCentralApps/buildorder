@@ -17,6 +17,7 @@
     "NextMajor",
     "NextMinor"
   ],
+  "cicdSchedule": "5 4 * * *",
   "conditionalSettings": [
     {
       "workflows": [
@@ -27,7 +28,7 @@
           "group: ${{ github.workflow }}-${{ github.ref }}",
           "cancel-in-progress: true"
         ],
-        "workflowschedule": [
+        "workflowsxchedule": [
           "cron: '5 4 * * *'",
           "cron: '6 6 * * *'"
         ]
