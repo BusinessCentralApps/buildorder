@@ -82,6 +82,7 @@
   "useProjectDependencies": true,
   "useCompilerFolder": true,
   "doNotPublishApps": true,
+  "NextMajorSchedule": "8 8 * * *",
   "runs-on": "ubuntu-latest",
   "shell": "pwsh",
   "gitHubRunner": "ubuntu-latest",
