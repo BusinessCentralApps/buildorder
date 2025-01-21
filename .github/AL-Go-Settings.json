@@ -87,6 +87,6 @@
   "gitHubRunner": "ubuntu-latest",
   "githubRunnerShell": "pwsh",
   "generateDependencyArtifact": true,
-  "templateSha": "fb7002adbfd34898b56699e0533523d5d8d8d449",
+  "templateSha": "90a752ba9e7c258df92a92b84e533c52b33070e7",
   "RepoVersion": "1.0"
 }
