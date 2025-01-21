@@ -28,7 +28,6 @@
           "cancel-in-progress: true"
         ],
         "workflowschedule": "5 4 * * *"
-        ]
       }
     },
     {
