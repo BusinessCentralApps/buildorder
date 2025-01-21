@@ -27,8 +27,7 @@
           "group: ${{ github.workflow }}-${{ github.ref }}",
           "cancel-in-progress: true"
         ],
-        "workflowschedule": [
-          "cron: '5 4 * * *'"
+        "workflowschedule": "5 4 * * *"
         ]
       }
     },
