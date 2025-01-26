@@ -103,7 +103,7 @@ jobs:
         with:
           shell: pwsh
           maxBuildDepth: ${{ env.workflowDepth }}
-          publishSkippedProjectArtifacts: 'true'
+          includeSkippedProjects: 'true'
 
       - name: Determine PowerPlatform Solution Folder
         id: DeterminePowerPlatformSolutionFolder
