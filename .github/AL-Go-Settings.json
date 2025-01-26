@@ -7,15 +7,12 @@
     "feature/*",
     "development"
   ],
+  "incrementalBuilds": {
+    "enable": true
+  },
   "CICDPullRequestBranches": [
     "main",
     "development"
-  ],
-  "buildModes": [
-    "Default",
-    "Clean",
-    "NextMajor",
-    "NextMinor"
   ],
   "conditionalSettings": [
     {
@@ -77,12 +74,9 @@
     "ALL"
   ],
   "useProjectDependencies": true,
-  "useCompilerFolder": true,
-  "doNotPublishApps": true,
-  "NextMajorSchedule": "8 8 * * *",
   "runs-on": "ubuntu-latest",
   "shell": "pwsh",
-  "gitHubRunner": "ubuntu-latest",
+  "gitHubRunner": "windows-latest",
   "githubRunnerShell": "pwsh",
   "generateDependencyArtifact": true,
   "templateSha": "3bd580517add95f3f0ddd206f7dc4a41726d4fe5",
