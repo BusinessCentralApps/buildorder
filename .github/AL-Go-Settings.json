@@ -20,7 +20,10 @@
         "CICD"
       ],
       "settings": {
-        "workflowconcurrency": [ "group: ${{ github.workflow }}-${{ github.ref }}", "cancel-in-progress: true" ],
+        "workflowconcurrency": [
+          "group: ${{ github.workflow }}-${{ github.ref }}",
+          "cancel-in-progress: true"
+        ],
         "workflowschedule": "5 4 * * *"
       }
     },
@@ -76,6 +79,6 @@
   "gitHubRunner": "windows-latest",
   "githubRunnerShell": "pwsh",
   "generateDependencyArtifact": true,
-  "templateSha": "3bd580517add95f3f0ddd206f7dc4a41726d4fe5",
+  "templateSha": "815cc508f7ee2ce16e588defb5d7e777b0baefba",
   "RepoVersion": "1.0"
 }
