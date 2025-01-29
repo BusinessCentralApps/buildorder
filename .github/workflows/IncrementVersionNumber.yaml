@@ -26,6 +26,12 @@ on:
         type: boolean
         default: false
 
+permissions:
+  actions: read
+  contents: write
+  id-token: write
+  pull-requests: write
+
 defaults:
   run:
     shell: pwsh
@@ -38,14 +44,9 @@ jobs:
   IncrementVersionNumber:
     needs: [ ]
     runs-on: [ ubuntu-latest ]
-    permissions:
-      actions: read
-      contents: write
-      id-token: write
-      pull-requests: write
     steps:
       - name: Dump Workflow Information
-        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@partial
+        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@MODUS
         with:
           shell: pwsh
 
@@ -54,18 +55,18 @@ jobs:
 
       - name: Initialize the workflow
         id: init
-        uses: freddydk/AL-Go/Actions/WorkflowInitialize@partial
+        uses: freddydk/AL-Go/Actions/WorkflowInitialize@MODUS
         with:
           shell: pwsh
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@partial
+        uses: freddydk/AL-Go/Actions/ReadSettings@MODUS
         with:
           shell: pwsh
 
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@partial
+        uses: freddydk/AL-Go/Actions/ReadSecrets@MODUS
         with:
           shell: pwsh
           gitHubSecrets: ${{ toJson(secrets) }}
@@ -73,7 +74,7 @@ jobs:
           useGhTokenWorkflowForPush: '${{ github.event.inputs.useGhTokenWorkflow }}'
 
       - name: Increment Version Number
-        uses: freddydk/AL-Go/Actions/IncrementVersionNumber@partial
+        uses: freddydk/AL-Go/Actions/IncrementVersionNumber@MODUS
         with:
           shell: pwsh
           token: ${{ steps.ReadSecrets.outputs.TokenForPush }}
@@ -84,7 +85,7 @@ jobs:
 
       - name: Finalize the workflow
         if: always()
-        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@partial
+        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@MODUS
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:

@@ -1,6 +1,6 @@
 {
   "type": "PTE",
-  "templateUrl": "https://github.com/freddydk/AL-Go@partial",
+  "templateUrl": "https://github.com/freddydk/AL-Go@MODUS",
   "CICDPushBranches": [
     "main",
     "release/*",
@@ -79,6 +79,6 @@
   "gitHubRunner": "windows-latest",
   "githubRunnerShell": "pwsh",
   "generateDependencyArtifact": true,
-  "templateSha": "3bd580517add95f3f0ddd206f7dc4a41726d4fe5",
+  "templateSha": "3462044f1437f5eab55091c30c2368b321cf85c2",
   "RepoVersion": "1.0"
 }
