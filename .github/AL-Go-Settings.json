@@ -8,7 +8,7 @@
     "development"
   ],
   "incrementalBuilds": {
-    "enable": true
+    "onPush": true
   },
   "CICDPullRequestBranches": [
     "main",
