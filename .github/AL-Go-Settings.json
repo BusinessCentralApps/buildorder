@@ -7,6 +7,9 @@
     "feature/*",
     "development"
   ],
+  "defaultNewContainerParameters": {
+    "isolation": "hyperv"
+  },
   "incrementalBuilds": {
     "onPush": true
   },
