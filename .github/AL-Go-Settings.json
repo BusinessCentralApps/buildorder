@@ -13,6 +13,7 @@
   "incrementalBuilds": {
     "onPush": true
   },
+  "pullRequestTrigger": "pull_request",
   "CICDPullRequestBranches": [
     "main",
     "development"
