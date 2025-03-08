@@ -85,6 +85,8 @@
   "gitHubRunner": "windows-latest",
   "githubRunnerShell": "pwsh",
   "generateDependencyArtifact": true,
+  "useCompilerFolder": true,
+  "doNotPublishApps": true,
   "templateSha": "71684313502eb576c5c8dba9cbcd653b244a8d3e",
   "RepoVersion": "1.0"
 }
