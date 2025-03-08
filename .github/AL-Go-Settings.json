@@ -11,7 +11,8 @@
     "isolation": "hyperv"
   },
   "incrementalBuilds": {
-    "onPush": true
+    "onPush": true,
+    "onSchedule": true
   },
   "pullRequestTrigger": "pull_request",
   "CICDPullRequestBranches": [
