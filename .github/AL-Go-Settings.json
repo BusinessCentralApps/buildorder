@@ -19,6 +19,9 @@
     "main",
     "development"
   ],
+  "aldoc": {
+    "continuousDeployment": true
+  },
   "conditionalSettings": [
     {
       "workflows": [
