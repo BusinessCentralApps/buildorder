@@ -1,6 +1,6 @@
 {
   "type": "PTE",
-  "templateUrl": "https://github.com/microsoft/AL-Go-PTE@main",
+  "templateUrl": "https://github.com/freddydk/AL-Go@incrementalbug",
   "CICDPushBranches": [
     "main",
     "release/*",
@@ -30,7 +30,7 @@
           "cancel-in-progress: true"
         ],
         "workflowschedule": {
-          "cron": "45 * * * *"
+          "cron": "0 23 * * *"
         }
       }
     },
@@ -88,6 +88,6 @@
   "generateDependencyArtifact": true,
   "useCompilerFolder": true,
   "doNotPublishApps": true,
-  "templateSha": "6472dd494728483cee9b04dc7356fd6f2cc737b4",
+  "templateSha": "4136944810ff83db82e35fc1e57bcf83c2fe03aa",
   "RepoVersion": "1.0"
 }
