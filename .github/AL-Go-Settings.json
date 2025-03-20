@@ -12,16 +12,13 @@
   },
   "incrementalBuilds": {
     "onPush": true,
-    "onSchedule": true
+    "onSchedule": false
   },
   "pullRequestTrigger": "pull_request",
   "CICDPullRequestBranches": [
     "main",
     "development"
   ],
-  "aldoc": {
-    "continuousDeployment": true
-  },
   "conditionalSettings": [
     {
       "workflows": [
