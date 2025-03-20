@@ -30,7 +30,7 @@
           "cancel-in-progress: true"
         ],
         "workflowschedule": {
-          "cron": "45 * * * *"
+          "cron": "0 23 * * *"
         }
       }
     },
