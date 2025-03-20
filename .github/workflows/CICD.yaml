@@ -12,7 +12,7 @@ on:
       - '!.github/workflows/CICD.yaml'
     branches: [ 'main', 'release/*', 'feature/*', 'development' ]
   schedule:
-    - cron: '45 * * * *'
+    - cron: '0 23 * * *'
 
 defaults:
   run:
