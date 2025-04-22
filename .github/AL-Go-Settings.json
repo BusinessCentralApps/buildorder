@@ -88,6 +88,6 @@
   "generateDependencyArtifact": true,
   "useCompilerFolder": true,
   "doNotPublishApps": true,
-  "templateSha": "22abae7e01e5fd07befafd27c83672aafe6ae04a",
+  "templateSha": "53421d9b361b1e49d166e087985fb5d7da253421",
   "RepoVersion": "1.0"
 }
