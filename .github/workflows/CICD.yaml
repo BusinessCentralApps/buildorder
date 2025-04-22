@@ -53,7 +53,7 @@ jobs:
       powerPlatformSolutionFolder: ${{ steps.DeterminePowerPlatformSolutionFolder.outputs.powerPlatformSolutionFolder }}
     steps:
       - name: Dump Workflow Information
-        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@incrementalbug
+        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@customize
         with:
           shell: pwsh
 
@@ -64,13 +64,13 @@ jobs:
 
       - name: Initialize the workflow
         id: init
-        uses: freddydk/AL-Go/Actions/WorkflowInitialize@incrementalbug
+        uses: freddydk/AL-Go/Actions/WorkflowInitialize@customize
         with:
           shell: pwsh
 
       - name: Read settings
         id: ReadSettings
-        uses: freddydk/AL-Go/Actions/ReadSettings@incrementalbug
+        uses: freddydk/AL-Go/Actions/ReadSettings@customize
         with:
           shell: pwsh
           get: type,powerPlatformSolutionFolder,useGitSubmodules
@@ -78,7 +78,7 @@ jobs:
       - name: Read submodules token
         id: ReadSubmodulesToken
         if: env.useGitSubmodules != 'false' && env.useGitSubmodules != ''
-        uses: freddydk/AL-Go/Actions/ReadSecrets@incrementalbug
+        uses: freddydk/AL-Go/Actions/ReadSecrets@customize
         with:
           shell: pwsh
           gitHubSecrets: ${{ toJson(secrets) }}
@@ -99,7 +99,7 @@ jobs:
 
       - name: Determine Projects To Build
         id: determineProjectsToBuild
-        uses: freddydk/AL-Go/Actions/DetermineProjectsToBuild@incrementalbug
+        uses: freddydk/AL-Go/Actions/DetermineProjectsToBuild@customize
         with:
           shell: pwsh
           maxBuildDepth: ${{ env.workflowDepth }}
@@ -112,7 +112,7 @@ jobs:
 
       - name: Determine Delivery Target Secrets
         id: DetermineDeliveryTargetSecrets
-        uses: freddydk/AL-Go/Actions/DetermineDeliveryTargets@incrementalbug
+        uses: freddydk/AL-Go/Actions/DetermineDeliveryTargets@customize
         with:
           shell: pwsh
           projectsJson: '${{ steps.determineProjectsToBuild.outputs.ProjectsJson }}'
@@ -120,7 +120,7 @@ jobs:
 
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@incrementalbug
+        uses: freddydk/AL-Go/Actions/ReadSecrets@customize
         with:
           shell: pwsh
           gitHubSecrets: ${{ toJson(secrets) }}
@@ -128,7 +128,7 @@ jobs:
 
       - name: Determine Delivery Targets
         id: DetermineDeliveryTargets
-        uses: freddydk/AL-Go/Actions/DetermineDeliveryTargets@incrementalbug
+        uses: freddydk/AL-Go/Actions/DetermineDeliveryTargets@customize
         env:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
         with:
@@ -138,7 +138,7 @@ jobs:
 
       - name: Determine Deployment Environments
         id: DetermineDeploymentEnvironments
-        uses: freddydk/AL-Go/Actions/DetermineDeploymentEnvironments@incrementalbug
+        uses: freddydk/AL-Go/Actions/DetermineDeploymentEnvironments@customize
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
@@ -154,21 +154,21 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@incrementalbug
+        uses: freddydk/AL-Go/Actions/ReadSettings@customize
         with:
           shell: pwsh
           get: templateUrl
 
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@incrementalbug
+        uses: freddydk/AL-Go/Actions/ReadSecrets@customize
         with:
           shell: pwsh
           gitHubSecrets: ${{ toJson(secrets) }}
           getSecrets: 'ghTokenWorkflow'
 
       - name: Check for updates to AL-Go system files
-        uses: freddydk/AL-Go/Actions/CheckForUpdates@incrementalbug
+        uses: freddydk/AL-Go/Actions/CheckForUpdates@customize
         with:
           shell: pwsh
           templateUrl: ${{ env.templateUrl }}
@@ -198,6 +198,7 @@ jobs:
       secrets: 'licenseFileUrl,codeSignCertificateUrl,*codeSignCertificatePassword,keyVaultCertificateUrl,*keyVaultCertificatePassword,keyVaultClientId,gitHubPackagesContext,applicationInsightsConnectionString'
       signArtifacts: true
       useArtifactCache: true
+      needsContext:  ${{ toJson(needs) }}
 
   Build2:
     needs: [ Initialization, Build1 ]
@@ -222,6 +223,7 @@ jobs:
       secrets: 'licenseFileUrl,codeSignCertificateUrl,*codeSignCertificatePassword,keyVaultCertificateUrl,*keyVaultCertificatePassword,keyVaultClientId,gitHubPackagesContext,applicationInsightsConnectionString'
       signArtifacts: true
       useArtifactCache: true
+      needsContext:  ${{ toJson(needs) }}
 
   Build:
     needs: [ Initialization, Build2, Build1 ]
@@ -246,10 +248,11 @@ jobs:
       secrets: 'licenseFileUrl,codeSignCertificateUrl,*codeSignCertificatePassword,keyVaultCertificateUrl,*keyVaultCertificatePassword,keyVaultClientId,gitHubPackagesContext,applicationInsightsConnectionString'
       signArtifacts: true
       useArtifactCache: true
+      needsContext:  ${{ toJson(needs) }}
 
   DeployALDoc:
     needs: [ Initialization, Build ]
-    if: (!cancelled()) && needs.Build.result == 'Success' && needs.Initialization.outputs.generateALDocArtifact == 1 && github.ref_name == 'main'
+    if: (!cancelled()) && (needs.Build.result == 'success' || needs.Build.result == 'skipped') && needs.Initialization.outputs.generateALDocArtifact == 1 && github.ref_name == 'main'
     runs-on: [ ubuntu-latest ]
     name: Deploy Reference Documentation
     permissions:
@@ -265,12 +268,12 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Download artifacts
-        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4.2.1
         with:
           path: '.artifacts'
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@incrementalbug
+        uses: freddydk/AL-Go/Actions/ReadSettings@customize
         with:
           shell: pwsh
 
@@ -279,7 +282,7 @@ jobs:
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0
 
       - name: Build Reference Documentation
-        uses: freddydk/AL-Go/Actions/BuildReferenceDocumentation@incrementalbug
+        uses: freddydk/AL-Go/Actions/BuildReferenceDocumentation@customize
         with:
           shell: pwsh
           artifacts: '.artifacts'
@@ -311,12 +314,12 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Download artifacts
-        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4.2.1
         with:
           path: '.artifacts'
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@incrementalbug
+        uses: freddydk/AL-Go/Actions/ReadSettings@customize
         with:
           shell: ${{ matrix.shell }}
           get: type,powerPlatformSolutionFolder
@@ -330,7 +333,7 @@ jobs:
 
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@incrementalbug
+        uses: freddydk/AL-Go/Actions/ReadSecrets@customize
         with:
           shell: ${{ matrix.shell }}
           gitHubSecrets: ${{ toJson(secrets) }}
@@ -338,7 +341,7 @@ jobs:
 
       - name: Deploy to Business Central
         id: Deploy
-        uses: freddydk/AL-Go/Actions/Deploy@incrementalbug
+        uses: freddydk/AL-Go/Actions/Deploy@customize
         env:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
         with:
@@ -350,7 +353,7 @@ jobs:
 
       - name: Deploy to Power Platform
         if: env.type == 'PTE' && env.powerPlatformSolutionFolder != ''
-        uses: freddydk/AL-Go/Actions/DeployPowerPlatform@incrementalbug
+        uses: freddydk/AL-Go/Actions/DeployPowerPlatform@customize
         env:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
         with:
@@ -373,25 +376,25 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Download artifacts
-        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4.2.1
         with:
           path: '.artifacts'
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@incrementalbug
+        uses: freddydk/AL-Go/Actions/ReadSettings@customize
         with:
           shell: pwsh
 
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@incrementalbug
+        uses: freddydk/AL-Go/Actions/ReadSecrets@customize
         with:
           shell: pwsh
           gitHubSecrets: ${{ toJson(secrets) }}
           getSecrets: '${{ matrix.deliveryTarget }}Context'
 
       - name: Deliver
-        uses: freddydk/AL-Go/Actions/Deliver@incrementalbug
+        uses: freddydk/AL-Go/Actions/Deliver@customize
         env:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
         with:
@@ -411,7 +414,7 @@ jobs:
 
       - name: Finalize the workflow
         id: PostProcess
-        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@incrementalbug
+        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@customize
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
