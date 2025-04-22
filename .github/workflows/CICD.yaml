@@ -169,10 +169,12 @@ jobs:
 
       - name: Check for updates to AL-Go system files
         uses: freddydk/AL-Go/Actions/CheckForUpdates@customize
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         with:
           shell: pwsh
           templateUrl: ${{ env.templateUrl }}
-          ghTokenWorkflow: ${{ fromJson(steps.ReadSecrets.outputs.Secrets).ghTokenWorkflow }}
+          token: ${{ fromJson(steps.ReadSecrets.outputs.Secrets).ghTokenWorkflow }}
           downloadLatest: true
 
   Build1:

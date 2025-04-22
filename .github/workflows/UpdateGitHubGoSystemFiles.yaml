@@ -133,6 +133,8 @@ jobs:
 
       - name: Update AL-Go system files
         uses: freddydk/AL-Go/Actions/CheckForUpdates@customize
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         with:
           shell: pwsh
           token: ${{ fromJson(steps.ReadSecrets.outputs.Secrets).ghTokenWorkflow }}
