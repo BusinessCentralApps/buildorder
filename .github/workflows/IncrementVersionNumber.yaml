@@ -34,6 +34,9 @@ env:
   ALGoOrgSettings: ${{ vars.ALGoOrgSettings }}
   ALGoRepoSettings: ${{ vars.ALGoRepoSettings }}
 
+permissions:
+  contents: read
+
 jobs:
   IncrementVersionNumber:
     needs: [ ]
@@ -45,7 +48,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Dump Workflow Information
-        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@customize
+        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@TestWorkflowInput
         with:
           shell: pwsh
 
@@ -54,18 +57,25 @@ jobs:
 
       - name: Initialize the workflow
         id: init
-        uses: freddydk/AL-Go/Actions/WorkflowInitialize@customize
+        uses: freddydk/AL-Go/Actions/WorkflowInitialize@TestWorkflowInput
         with:
           shell: pwsh
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@customize
+        uses: freddydk/AL-Go/Actions/ReadSettings@TestWorkflowInput
         with:
           shell: pwsh
 
+      - name: Test Workflow Input
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        uses: freddydk/AL-Go/Actions/TestWorkflowInput@TestWorkflowInput
+        with:
+          shell: pwsh
+          workflowName: 'IncrementVersionNumber'
+
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@customize
+        uses: freddydk/AL-Go/Actions/ReadSecrets@TestWorkflowInput
         with:
           shell: pwsh
           gitHubSecrets: ${{ toJson(secrets) }}
@@ -73,7 +83,7 @@ jobs:
           useGhTokenWorkflowForPush: '${{ github.event.inputs.useGhTokenWorkflow }}'
 
       - name: Increment Version Number
-        uses: freddydk/AL-Go/Actions/IncrementVersionNumber@customize
+        uses: freddydk/AL-Go/Actions/IncrementVersionNumber@TestWorkflowInput
         with:
           shell: pwsh
           token: ${{ steps.ReadSecrets.outputs.TokenForPush }}
@@ -84,7 +94,7 @@ jobs:
 
       - name: Finalize the workflow
         if: always()
-        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@customize
+        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@TestWorkflowInput
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
