@@ -78,7 +78,7 @@ jobs:
       telemetryScopeJson: ${{ steps.init.outputs.telemetryScopeJson }}
     steps:
       - name: Dump Workflow Information
-        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@customize
+        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@avoidallsecrets
         with:
           shell: pwsh
 
@@ -87,20 +87,28 @@ jobs:
 
       - name: Initialize the workflow
         id: init
-        uses: freddydk/AL-Go/Actions/WorkflowInitialize@customize
+        uses: freddydk/AL-Go/Actions/WorkflowInitialize@avoidallsecrets
         with:
           shell: pwsh
 
       - name: Read settings
         id: ReadSettings
-        uses: freddydk/AL-Go/Actions/ReadSettings@customize
+        uses: freddydk/AL-Go/Actions/ReadSettings@avoidallsecrets
         with:
           shell: pwsh
           get: templateUrl,repoName,type,powerPlatformSolutionFolder
 
+      - name: Determine secrets
+        id: DetermineSecrets
+        uses: freddydk/AL-Go/Actions/DetermineSecrets@avoidallsecrets
+        with:
+          shell: pwsh
+          getSecrets: 'TokenForPush,ghTokenWorkflow'
+          useGhTokenWorkflowForPush: '${{ github.event.inputs.useGhTokenWorkflow }}'
+
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@customize
+        uses: freddydk/AL-Go/Actions/ReadSecrets@avoidallsecrets
         with:
           shell: pwsh
           gitHubSecrets: ${{ toJson(secrets) }}
@@ -109,12 +117,12 @@ jobs:
 
       - name: Determine Projects
         id: determineProjects
-        uses: freddydk/AL-Go/Actions/DetermineProjectsToBuild@customize
+        uses: freddydk/AL-Go/Actions/DetermineProjectsToBuild@avoidallsecrets
         with:
           shell: pwsh
 
       - name: Check for updates to AL-Go system files
-        uses: freddydk/AL-Go/Actions/CheckForUpdates@customize
+        uses: freddydk/AL-Go/Actions/CheckForUpdates@avoidallsecrets
         with:
           shell: pwsh
           templateUrl: ${{ env.templateUrl }}
@@ -209,7 +217,7 @@ jobs:
 
       - name: Prepare release notes
         id: createreleasenotes
-        uses: freddydk/AL-Go/Actions/CreateReleaseNotes@customize
+        uses: freddydk/AL-Go/Actions/CreateReleaseNotes@avoidallsecrets
         with:
           shell: pwsh
           buildVersion: ${{ github.event.inputs.buildVersion }}
@@ -252,13 +260,21 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@customize
+        uses: freddydk/AL-Go/Actions/ReadSettings@avoidallsecrets
         with:
           shell: pwsh
 
+      - name: Determine secrets
+        id: DetermineSecrets
+        uses: freddydk/AL-Go/Actions/DetermineSecrets@avoidallsecrets
+        with:
+          shell: pwsh
+          getSecrets: 'nuGetContext,storageContext,TokenForPush'
+          useGhTokenWorkflowForPush: '${{ github.event.inputs.useGhTokenWorkflow }}'
+
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@customize
+        uses: freddydk/AL-Go/Actions/ReadSecrets@avoidallsecrets
         with:
           shell: pwsh
           gitHubSecrets: ${{ toJson(secrets) }}
@@ -296,7 +312,7 @@ jobs:
             });
 
       - name: Deliver to NuGet
-        uses: freddydk/AL-Go/Actions/Deliver@customize
+        uses: freddydk/AL-Go/Actions/Deliver@avoidallsecrets
         if: ${{ fromJson(steps.ReadSecrets.outputs.Secrets).nuGetContext != '' }}
         env:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
@@ -309,7 +325,7 @@ jobs:
           atypes: 'Apps,TestApps'
 
       - name: Deliver to Storage
-        uses: freddydk/AL-Go/Actions/Deliver@customize
+        uses: freddydk/AL-Go/Actions/Deliver@avoidallsecrets
         if: ${{ fromJson(steps.ReadSecrets.outputs.Secrets).storageContext != '' }}
         env:
           Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
@@ -353,13 +369,21 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@customize
+        uses: freddydk/AL-Go/Actions/ReadSettings@avoidallsecrets
         with:
           shell: pwsh
 
+      - name: Determine secrets
+        id: DetermineSecrets
+        uses: freddydk/AL-Go/Actions/DetermineSecrets@avoidallsecrets
+        with:
+          shell: pwsh
+          getSecrets: 'TokenForPush'
+          useGhTokenWorkflowForPush: '${{ github.event.inputs.useGhTokenWorkflow }}'
+
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@customize
+        uses: freddydk/AL-Go/Actions/ReadSecrets@avoidallsecrets
         with:
           shell: pwsh
           gitHubSecrets: ${{ toJson(secrets) }}
@@ -367,7 +391,7 @@ jobs:
           useGhTokenWorkflowForPush: '${{ github.event.inputs.useGhTokenWorkflow }}'
 
       - name: Update Version Number
-        uses: freddydk/AL-Go/Actions/IncrementVersionNumber@customize
+        uses: freddydk/AL-Go/Actions/IncrementVersionNumber@avoidallsecrets
         with:
           shell: pwsh
           token: ${{ steps.ReadSecrets.outputs.TokenForPush }}
@@ -385,7 +409,7 @@ jobs:
 
       - name: Finalize the workflow
         id: PostProcess
-        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@customize
+        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@avoidallsecrets
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:

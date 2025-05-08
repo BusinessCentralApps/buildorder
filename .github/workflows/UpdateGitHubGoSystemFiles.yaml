@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       templateUrl:
-        description: Template Repository URL (current is https://github.com/freddydk/AL-Go@customize)
+        description: Template Repository URL (current is https://github.com/freddydk/AL-Go@avoidallsecrets)
         required: false
         default: ''
       downloadLatest:
@@ -46,14 +46,14 @@ jobs:
 
       - name: Read settings
         id: ReadSettings
-        uses: freddydk/AL-Go/Actions/ReadSettings@customize
+        uses: freddydk/AL-Go/Actions/ReadSettings@avoidallsecrets
         with:
           shell: pwsh
           get: templateUrl
 
       - name: Get Workflow Multi-Run Branches
         id: GetBranches
-        uses: freddydk/AL-Go/Actions/GetWorkflowMultiRunBranches@customize
+        uses: freddydk/AL-Go/Actions/GetWorkflowMultiRunBranches@avoidallsecrets
         with:
           shell: pwsh
           includeBranches: ${{ github.event.inputs.includeBranches }}
@@ -82,7 +82,7 @@ jobs:
 
     steps:
       - name: Dump Workflow Information
-        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@customize
+        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@avoidallsecrets
         with:
           shell: pwsh
 
@@ -93,23 +93,30 @@ jobs:
 
       - name: Initialize the workflow
         id: init
-        uses: freddydk/AL-Go/Actions/WorkflowInitialize@customize
+        uses: freddydk/AL-Go/Actions/WorkflowInitialize@avoidallsecrets
         with:
           shell: pwsh
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@customize
+        uses: freddydk/AL-Go/Actions/ReadSettings@avoidallsecrets
         with:
           shell: pwsh
           get: commitOptions
 
+      - name: Determine secrets
+        id: DetermineSecrets
+        uses: freddydk/AL-Go/Actions/DetermineSecrets@avoidallsecrets
+        with:
+          shell: pwsh
+          getSecrets: 'ghTokenWorkflow'
+
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@customize
+        uses: freddydk/AL-Go/Actions/ReadSecrets@avoidallsecrets
         with:
           shell: pwsh
           gitHubSecrets: ${{ toJson(secrets) }}
-          getSecrets: 'ghTokenWorkflow,CustomALGoSystemFilesSecrets'
+          getSecrets: 'ghTokenWorkflow'
 
       - name: Calculate Commit Options
         env:
@@ -132,10 +139,9 @@ jobs:
           Add-Content -Encoding UTF8 -Path $env:GITHUB_ENV -Value "downloadLatest=$downloadLatest"
 
       - name: Update AL-Go system files
-        uses: freddydk/AL-Go/Actions/CheckForUpdates@customize
+        uses: freddydk/AL-Go/Actions/CheckForUpdates@avoidallsecrets
         env:
           GITHUB_TOKEN: ${{ github.token }}
-          Secrets: '${{ steps.ReadSecrets.outputs.Secrets }}'
         with:
           shell: pwsh
           token: ${{ fromJson(steps.ReadSecrets.outputs.Secrets).ghTokenWorkflow }}
@@ -147,7 +153,7 @@ jobs:
 
       - name: Finalize the workflow
         if: always()
-        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@customize
+        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@avoidallsecrets
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:

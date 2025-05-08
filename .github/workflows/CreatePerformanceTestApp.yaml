@@ -57,7 +57,7 @@ jobs:
     runs-on: [ ubuntu-latest ]
     steps:
       - name: Dump Workflow Information
-        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@customize
+        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@avoidallsecrets
         with:
           shell: pwsh
 
@@ -66,18 +66,26 @@ jobs:
 
       - name: Initialize the workflow
         id: init
-        uses: freddydk/AL-Go/Actions/WorkflowInitialize@customize
+        uses: freddydk/AL-Go/Actions/WorkflowInitialize@avoidallsecrets
         with:
           shell: pwsh
 
       - name: Read settings
-        uses: freddydk/AL-Go/Actions/ReadSettings@customize
+        uses: freddydk/AL-Go/Actions/ReadSettings@avoidallsecrets
         with:
           shell: pwsh
 
+      - name: Determine secrets
+        id: DetermineSecrets
+        uses: freddydk/AL-Go/Actions/DetermineSecrets@avoidallsecrets
+        with:
+          shell: pwsh
+          getSecrets: 'TokenForPush'
+          useGhTokenWorkflowForPush: '${{ github.event.inputs.useGhTokenWorkflow }}'
+
       - name: Read secrets
         id: ReadSecrets
-        uses: freddydk/AL-Go/Actions/ReadSecrets@customize
+        uses: freddydk/AL-Go/Actions/ReadSecrets@avoidallsecrets
         with:
           shell: pwsh
           gitHubSecrets: ${{ toJson(secrets) }}
@@ -85,7 +93,7 @@ jobs:
           useGhTokenWorkflowForPush: '${{ github.event.inputs.useGhTokenWorkflow }}'
 
       - name: Creating a new test app
-        uses: freddydk/AL-Go/Actions/CreateApp@customize
+        uses: freddydk/AL-Go/Actions/CreateApp@avoidallsecrets
         with:
           shell: pwsh
           token: ${{ steps.ReadSecrets.outputs.TokenForPush }}
@@ -100,7 +108,7 @@ jobs:
 
       - name: Finalize the workflow
         if: always()
-        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@customize
+        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@avoidallsecrets
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:

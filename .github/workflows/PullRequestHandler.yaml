@@ -28,7 +28,7 @@ jobs:
     if: (github.event.pull_request.base.repo.full_name != github.event.pull_request.head.repo.full_name) && (github.event_name != 'pull_request')
     runs-on: windows-latest
     steps:
-      - uses: freddydk/AL-Go/Actions/VerifyPRChanges@customize
+      - uses: freddydk/AL-Go/Actions/VerifyPRChanges@avoidallsecrets
 
   Initialization:
     needs: [ PregateCheck ]
@@ -45,7 +45,7 @@ jobs:
       telemetryScopeJson: ${{ steps.init.outputs.telemetryScopeJson }}
     steps:
       - name: Dump Workflow Information
-        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@customize
+        uses: freddydk/AL-Go/Actions/DumpWorkflowInfo@avoidallsecrets
         with:
           shell: pwsh
 
@@ -57,13 +57,13 @@ jobs:
 
       - name: Initialize the workflow
         id: init
-        uses: freddydk/AL-Go/Actions/WorkflowInitialize@customize
+        uses: freddydk/AL-Go/Actions/WorkflowInitialize@avoidallsecrets
         with:
           shell: pwsh
 
       - name: Read settings
         id: ReadSettings
-        uses: freddydk/AL-Go/Actions/ReadSettings@customize
+        uses: freddydk/AL-Go/Actions/ReadSettings@avoidallsecrets
         with:
           shell: pwsh
           get: shortLivedArtifactsRetentionDays
@@ -76,7 +76,7 @@ jobs:
 
       - name: Determine Projects To Build
         id: determineProjectsToBuild
-        uses: freddydk/AL-Go/Actions/DetermineProjectsToBuild@customize
+        uses: freddydk/AL-Go/Actions/DetermineProjectsToBuild@avoidallsecrets
         with:
           shell: pwsh
           maxBuildDepth: ${{ env.workflowDepth }}
@@ -104,7 +104,6 @@ jobs:
       secrets: 'licenseFileUrl,keyVaultCertificateUrl,*keyVaultCertificatePassword,keyVaultClientId,gitHubPackagesContext,applicationInsightsConnectionString'
       artifactsRetentionDays: ${{ fromJson(needs.Initialization.outputs.artifactsRetentionDays) }}
       artifactsNameSuffix: 'PR${{ github.event.number }}'
-      needsContext:  ${{ toJson(needs) }}
       useArtifactCache: true
 
   Build2:
@@ -130,7 +129,6 @@ jobs:
       secrets: 'licenseFileUrl,keyVaultCertificateUrl,*keyVaultCertificatePassword,keyVaultClientId,gitHubPackagesContext,applicationInsightsConnectionString'
       artifactsRetentionDays: ${{ fromJson(needs.Initialization.outputs.artifactsRetentionDays) }}
       artifactsNameSuffix: 'PR${{ github.event.number }}'
-      needsContext:  ${{ toJson(needs) }}
       useArtifactCache: true
 
   Build:
@@ -156,7 +154,6 @@ jobs:
       secrets: 'licenseFileUrl,keyVaultCertificateUrl,*keyVaultCertificatePassword,keyVaultClientId,gitHubPackagesContext,applicationInsightsConnectionString'
       artifactsRetentionDays: ${{ fromJson(needs.Initialization.outputs.artifactsRetentionDays) }}
       artifactsNameSuffix: 'PR${{ github.event.number }}'
-      needsContext:  ${{ toJson(needs) }}
       useArtifactCache: true
 
   StatusCheck:
@@ -167,7 +164,7 @@ jobs:
     steps:
       - name: Pull Request Status Check
         id: PullRequestStatusCheck
-        uses: freddydk/AL-Go/Actions/PullRequestStatusCheck@customize
+        uses: freddydk/AL-Go/Actions/PullRequestStatusCheck@avoidallsecrets
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
@@ -175,7 +172,7 @@ jobs:
 
       - name: Finalize the workflow
         id: PostProcess
-        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@customize
+        uses: freddydk/AL-Go/Actions/WorkflowPostProcess@avoidallsecrets
         if: success() || failure()
         env:
           GITHUB_TOKEN: ${{ github.token }}
