@@ -98,12 +98,11 @@ jobs:
           shell: pwsh
           get: templateUrl,repoName,type,powerPlatformSolutionFolder
 
-      - name: Test Workflow Input
+      - name: Validate Workflow Input
         if: ${{ github.event_name == 'workflow_dispatch' }}
-        uses: freddydk/AL-Go/Actions/TestWorkflowInput@TestWorkflowInput
+        uses: freddydk/AL-Go/Actions/ValidateWorkflowInput@TestWorkflowInput
         with:
           shell: pwsh
-          workflowName: 'CreateRelease'
 
       - name: Read secrets
         id: ReadSecrets
