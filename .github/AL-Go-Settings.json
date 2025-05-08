@@ -1,6 +1,6 @@
 {
   "type": "PTE",
-  "templateUrl": "https://github.com/freddydk/AL-Go@TestWorkflowInput",
+  "templateUrl": "https://github.com/freddydk/AL-Go@customize",
   "CICDPushBranches": [
     "main",
     "release/*",
@@ -88,6 +88,6 @@
   "generateDependencyArtifact": true,
   "useCompilerFolder": true,
   "doNotPublishApps": true,
-  "templateSha": "6bed4d1e3f625fbe094ba43e9b7ae67812a140c3",
+  "templateSha": "905678df8d104c9373f114b2b1290fef8180103f",
   "RepoVersion": "1.0"
 }
