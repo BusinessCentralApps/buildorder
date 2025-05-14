@@ -1,25 +1,32 @@
 {
+  "$schema": "https://raw.githubusercontent.com/freddydk/AL-Go/customize/Actions/settings.schema.json",
   "country": "dk",
   "appFolders": [],
   "testFolders": [],
   "repoVersion": "3.3",
   "conditionalSettings": [
     {
-      "buildModes": ["Default"],
+      "buildModes": [
+        "Default"
+      ],
       "settings": {
         "artifact": "https://bcartifacts-exdbf9fwegejdqak.b02.azurefd.net/sandbox/24.0.16410.18040/dk"
       }
     },
     {
-      "buildModes": ["NextMajor"],
+      "buildModes": [
+        "NextMajor"
+      ],
       "settings": {
-        "artifact":  "///dk/nextmajor/"
+        "artifact": "///dk/nextmajor/"
       }
     },
     {
-      "buildModes": ["NextMinor"],
+      "buildModes": [
+        "NextMinor"
+      ],
       "settings": {
-        "artifact":  "///dk/nextminor/"
+        "artifact": "///dk/nextminor/"
       }
     }
   ]

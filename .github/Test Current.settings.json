@@ -1,5 +1,6 @@
 {
-    "artifact":  "////latest",
-    "cacheImageName":  "",
-    "versioningStrategy":  15
+  "$schema": "https://raw.githubusercontent.com/freddydk/AL-Go/customize/Actions/settings.schema.json",
+  "artifact": "////latest",
+  "cacheImageName": "",
+  "versioningStrategy": 15
 }

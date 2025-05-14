@@ -1,6 +1,7 @@
 {
+  "$schema": "https://raw.githubusercontent.com/freddydk/AL-Go/customize/Actions/settings.schema.json",
   "type": "PTE",
-  "templateUrl": "https://github.com/freddydk/AL-Go@avoidallsecrets",
+  "templateUrl": "https://github.com/freddydk/AL-Go@customize",
   "CICDPushBranches": [
     "main",
     "release/*",
@@ -88,6 +89,6 @@
   "generateDependencyArtifact": true,
   "useCompilerFolder": true,
   "doNotPublishApps": true,
-  "templateSha": "472893f95875c1dadb252d7a9861aea6f0198515",
+  "templateSha": "c97fd3377e8b4fd796813947a8daeab376f3a539",
   "RepoVersion": "1.0"
 }
